@@ -1,0 +1,8 @@
+services:
+  Dbp\Relay\MonoConnectorCampusonlineBundle\Service\TuitionFeeService:
+    autowire: true
+    autoconfigure: true
+    public: true
+  dbp.mono.campusonline:
+    alias: Dbp\Relay\MonoConnectorCampusonlineBundle\Service\TuitionFeeService
+    public: true

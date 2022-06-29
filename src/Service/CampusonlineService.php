@@ -26,7 +26,6 @@ class CampusonlineService
     private $logger;
 
     /**
-     * @param array $config
      * @return void
      */
     public function setConfig(array $config)
@@ -35,7 +34,6 @@ class CampusonlineService
     }
 
     /**
-     * @param LoggerInterface $logger
      * @return void
      */
     public function setLogger(LoggerInterface $logger)
@@ -46,9 +44,6 @@ class CampusonlineService
         }
     }
 
-    /**
-     * @param string $type
-     */
     protected function getApiByType(string $type): Connection
     {
         if (!array_key_exists($type, $this->api)) {
@@ -62,19 +57,17 @@ class CampusonlineService
             }
             $this->api[$type] = $api;
         }
+
         return $this->api[$type];
     }
 
-    /**
-     * @param string $type
-     * @return array
-     */
     protected function getConfigByType(string $type): array
     {
         $config = [];
         if (array_key_exists($type, $this->config['payment_types'])) {
             $config = $this->config['payment_types'][$type];
         }
+
         return $config;
     }
 }

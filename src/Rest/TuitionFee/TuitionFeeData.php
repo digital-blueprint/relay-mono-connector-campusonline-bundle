@@ -13,7 +13,6 @@ class TuitionFeeData
 
     /**
      * @param float $amount
-     * @return void
      */
     public function setAmount(?float $amount): void
     {
@@ -43,7 +42,6 @@ class TuitionFeeData
 
     /**
      * @param string $semesterKey
-     * @return void
      */
     public function setSemesterKey(?string $semesterKey): void
     {

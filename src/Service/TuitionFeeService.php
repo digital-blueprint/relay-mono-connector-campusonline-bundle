@@ -23,10 +23,12 @@ class TuitionFeeService extends CampusonlineService implements BackendServiceInt
         if (!$payment->getDataUpdatedAt()) {
             $api = $this->getApiByType($payment->getType());
             $tuitionFeeData = $this->getCurrentOpenFeeByObfuscatedId($api, $payment);
-            $payment->setAmount((string)$tuitionFeeData->getAmountAbs());
+            $payment->setAmount((string) $tuitionFeeData->getAmountAbs());
             $payment->setCurrency(Payment::PRICE_CURRENCY_EUR);
+
             return true;
         }
+
         return false;
     }
 

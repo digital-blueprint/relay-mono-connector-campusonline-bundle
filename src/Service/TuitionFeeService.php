@@ -32,7 +32,7 @@ class TuitionFeeService extends CampusonlineService implements BackendServiceInt
         return false;
     }
 
-    private function getCurrentOpenFeeByObfuscatedId($api, PaymentPersistence $payment): TuitionFeeData
+    private function getCurrentOpenFeeByObfuscatedId($api, PaymentPersistence $payment): ?TuitionFeeData
     {
         $tuitionFeeData = null;
 

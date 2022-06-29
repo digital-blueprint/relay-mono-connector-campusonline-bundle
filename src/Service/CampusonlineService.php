@@ -4,14 +4,13 @@ declare(strict_types=1);
 
 namespace Dbp\Relay\MonoConnectorCampusonlineBundle\Service;
 
-use Dbp\CampusonlineApi\Rest\Api;
 use Dbp\Relay\MonoConnectorCampusonlineBundle\Rest\Connection;
 use Psr\Log\LoggerInterface;
 
 class CampusonlineService
 {
     /**
-     * @var Api[]
+     * @var Connection[]
      */
     private $api = [];
 
@@ -39,8 +38,8 @@ class CampusonlineService
     public function setLogger(LoggerInterface $logger)
     {
         $this->logger = $logger;
-        if ($this->api !== null) {
-            $this->api->setLogger($logger);
+        foreach ($this->api as $api) {
+            $api->setLogger($logger);
         }
     }
 

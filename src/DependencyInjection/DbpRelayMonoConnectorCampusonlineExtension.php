@@ -26,6 +26,6 @@ class DbpRelayMonoConnectorCampusonlineExtension extends ConfigurableExtension
         $loader->load('services.yaml');
 
         $definition = $container->getDefinition(TuitionFeeService::class);
-        $definition->addMethodCall('setConfig', [$mergedConfig ?? []]);
+        $definition->addMethodCall('setConfig', [$mergedConfig]);
     }
 }

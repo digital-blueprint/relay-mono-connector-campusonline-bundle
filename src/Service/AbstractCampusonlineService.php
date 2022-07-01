@@ -7,7 +7,7 @@ namespace Dbp\Relay\MonoConnectorCampusonlineBundle\Service;
 use Dbp\Relay\MonoConnectorCampusonlineBundle\Rest\Connection;
 use Psr\Log\LoggerInterface;
 
-class CampusonlineService
+abstract class AbstractCampusonlineService
 {
     /**
      * @var Connection[]

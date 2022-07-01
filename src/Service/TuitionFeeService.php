@@ -61,4 +61,36 @@ class TuitionFeeService extends CampusonlineService implements BackendServiceInt
 
         return $tuitionFeeData;
     }
+
+    public function notify(PaymentPersistence &$payment): bool
+    {
+        if (!$payment->getNotifiedAt()) {
+            $api = $this->getApiByType($payment->getType());
+            return $this->registerPayment($api, $payment);
+        }
+
+        return false;
+    }
+
+    private function registerPayment($api, PaymentPersistence $payment)
+    {
+        $uriTemplate = new UriTemplate('/QSYSTEM_TUG/co/tuition-fee-payment-interface/api/payment-registrations');
+        $uri = (string) $uriTemplate->expand([
+            'obfuscatedId' => $payment->getLocalIdentifier(),
+        ]);
+        try {
+            $client = $api->getClient();
+            /** @var ResponseInterface $response */
+            $response = $client->post($uri, [
+                'form_params' => [
+                    'personUid' => $payment->getLocalIdentifier(),
+                    'amount' => $payment->getAmount(),
+                ],
+            ]);
+            return ($response->getStatusCode() === 200);
+        } catch (RequestException $e) {
+        }
+
+        return false;
+    }
 }

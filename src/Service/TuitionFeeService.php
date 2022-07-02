@@ -87,7 +87,7 @@ class TuitionFeeService extends AbstractCampusonlineService implements BackendSe
                     'amount' => $payment->getAmount(),
                 ],
             ]);
-            return ($response->getStatusCode() === 200);
+            return $response->getStatusCode() === 200;
         } catch (RequestException $e) {
         }
 

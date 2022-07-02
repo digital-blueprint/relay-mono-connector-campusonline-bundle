@@ -36,7 +36,7 @@ class TuitionFeeService extends AbstractCampusonlineService implements BackendSe
     {
         $tuitionFeeData = null;
 
-        $uriTemplate = new UriTemplate('/QSYSTEM_TUG/co/tuition-fee-payment-interface/api/open-fees/{obfuscatedId}/current');
+        $uriTemplate = new UriTemplate('co/tuition-fee-payment-interface/api/open-fees/{obfuscatedId}/current');
         $uri = (string) $uriTemplate->expand([
             'obfuscatedId' => $payment->getLocalIdentifier(),
         ]);
@@ -74,7 +74,7 @@ class TuitionFeeService extends AbstractCampusonlineService implements BackendSe
 
     private function registerPayment($api, PaymentPersistence $payment)
     {
-        $uriTemplate = new UriTemplate('/QSYSTEM_TUG/co/tuition-fee-payment-interface/api/payment-registrations');
+        $uriTemplate = new UriTemplate('co/tuition-fee-payment-interface/api/payment-registrations');
         $uri = (string) $uriTemplate->expand([
             'obfuscatedId' => $payment->getLocalIdentifier(),
         ]);

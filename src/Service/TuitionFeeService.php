@@ -66,6 +66,7 @@ class TuitionFeeService extends AbstractCampusonlineService implements BackendSe
     {
         if (!$payment->getNotifiedAt()) {
             $api = $this->getApiByType($payment->getType());
+
             return $this->registerPayment($api, $payment);
         }
 
@@ -87,6 +88,7 @@ class TuitionFeeService extends AbstractCampusonlineService implements BackendSe
                     'amount' => $payment->getAmount(),
                 ],
             ]);
+
             return $response->getStatusCode() === 200;
         } catch (RequestException $e) {
         }

@@ -13,7 +13,7 @@ use GuzzleHttp\Exception\RequestException;
 use League\Uri\UriTemplate;
 use Psr\Http\Message\ResponseInterface;
 
-class TuitionFeeService extends CampusonlineService implements BackendServiceInterface
+class TuitionFeeService extends AbstractCampusonlineService implements BackendServiceInterface
 {
     private const FIELD_AMOUNT = 'amount';
     private const FIELD_SEMESTER_KEY = 'semesterKey';

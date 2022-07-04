@@ -278,12 +278,12 @@
             "source": {
                 "type": "git",
                 "url": "https://gitlab.tugraz.at/dbp/mono/dbp-relay-mono-bundle.git",
-                "reference": "5c92253672091abd5af28bc6cdf97ac6dc45bc0b"
+                "reference": "a13b5a14e4800931d8550e39f7fb96856ebf7e01"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://gitlab.tugraz.at/api/v4/projects/dbp%2Fmono%2Fdbp-relay-mono-bundle/repository/archive.zip?sha=5c92253672091abd5af28bc6cdf97ac6dc45bc0b",
-                "reference": "5c92253672091abd5af28bc6cdf97ac6dc45bc0b",
+                "url": "https://gitlab.tugraz.at/api/v4/projects/dbp%2Fmono%2Fdbp-relay-mono-bundle/repository/archive.zip?sha=a13b5a14e4800931d8550e39f7fb96856ebf7e01",
+                "reference": "a13b5a14e4800931d8550e39f7fb96856ebf7e01",
                 "shasum": ""
             },
             "require": {
@@ -351,7 +351,7 @@
                 "source": "https://gitlab.tugraz.at/dbp/mono/dbp-relay-mono-bundle/-/tree/main",
                 "issues": "https://gitlab.tugraz.at/dbp/mono/dbp-relay-mono-bundle/-/issues"
             },
-            "time": "2022-07-02T09:15:43+02:00"
+            "time": "2022-07-04T02:17:37+02:00"
         },
         {
             "name": "doctrine/annotations",

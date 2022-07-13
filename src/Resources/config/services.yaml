@@ -1,4 +1,7 @@
 services:
+  Dbp\Relay\MonoConnectorCampusonlineBundle\Service\LdapService:
+    autowire: true
+    autoconfigure: true
   Dbp\Relay\MonoConnectorCampusonlineBundle\Service\TuitionFeeService:
     autowire: true
     autoconfigure: true

@@ -5,6 +5,8 @@ declare(strict_types=1);
 namespace Dbp\Relay\MonoConnectorCampusonlineBundle\Service;
 
 use Dbp\CampusonlineApi\Rest\Tools;
+use Dbp\Relay\CoreBundle\API\UserSessionInterface;
+use Dbp\Relay\CoreBundle\Exception\ApiError;
 use Dbp\Relay\MonoBundle\Entity\Payment;
 use Dbp\Relay\MonoBundle\Entity\PaymentPersistence;
 use Dbp\Relay\MonoBundle\Service\BackendServiceInterface;
@@ -12,15 +14,49 @@ use Dbp\Relay\MonoConnectorCampusonlineBundle\Rest\TuitionFee\TuitionFeeData;
 use GuzzleHttp\Exception\RequestException;
 use League\Uri\UriTemplate;
 use Psr\Http\Message\ResponseInterface;
+use Symfony\Component\HttpFoundation\Response;
 
 class TuitionFeeService extends AbstractCampusonlineService implements BackendServiceInterface
 {
     private const FIELD_AMOUNT = 'amount';
     private const FIELD_SEMESTER_KEY = 'semesterKey';
 
+    /**
+     * @var LdapService
+     */
+    private $ldapService;
+
+    /**
+     * @var UserSessionInterface
+     */
+    private $userSession;
+
+    public function __construct(
+        LdapService $ldapService,
+        UserSessionInterface $userSession
+    )
+    {
+        $this->ldapService = $ldapService;
+        $this->userSession = $userSession;
+    }
+
     public function updateData(PaymentPersistence &$payment): bool
     {
         if (!$payment->getDataUpdatedAt()) {
+            $userIdentifier = $this->userSession->getUserIdentifier();
+            if (!$userIdentifier) {
+                throw ApiError::withDetails(Response::HTTP_UNAUTHORIZED, 'User identifier empty!', 'mono:user-identifier-empty');
+            }
+
+            $type = $payment->getType();
+            $ldapConfig = $this->getConfigByType($type);
+            $this->ldapService->setConfig($ldapConfig);
+            $ldapData = $this->ldapService->getDataByIdentifier($userIdentifier);
+
+            $payment->setLocalIdentifier($ldapData->obfuscatedId);
+            $payment->setGivenName($ldapData->givenName);
+            $payment->setFamilyName($ldapData->familyName);
+
             $api = $this->getApiByType($payment->getType());
             $tuitionFeeData = $this->getCurrentOpenFeeByObfuscatedId($api, $payment);
             $payment->setAmount((string) $tuitionFeeData->getAmountAbs());

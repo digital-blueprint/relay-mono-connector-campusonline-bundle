@@ -3,57 +3,23 @@
 [GitLab](https://gitlab.tugraz.at/dbp/relay/dbp-relay-mono-connector-campusonline-bundle) |
 [Packagist](https://packagist.org/packages/dbp/relay-mono-connector-campusonline-bundle)
 
-This Symfony bundle can be used as a template for creating new bundles for the
-DBP Relay project.
+## Bundle installation
 
-When including this bundle into your API server it will gain the following
-features:
+You can install the bundle directly from [packagist.org](https://packagist.org/packages/dbp/relay-mono-connector-campusonline-bundle).
 
-* A custom `./bin/console` command
-* An example entity
-* Various HTTP methods implemented for that entity
-
-## TL;DR
-
-The quickest way to make use of this template bundle is to feed your desired names
-to one command and generate a ready-to-use bundle with the correct naming.
-
-See [Generate DBP Symfony bundle](https://dbp-demo.tugraz.at/dev-guide/relay/naming/#generate-dbp-symfony-bundle) for more information.
-
-## Using the Bundle as a Template
-
-* Copy the repo contents
-* Adjust the package name in `composer.json`, in this example we'll pretend you named your bundle `dbp/relay-your-bundle`
-* Invent a new PHP namespace and adjust it in all PHP files
-* Rename `src/DbpRelayMonoConnectorCampusonlineBundle` and `DependencyInjection/DbpRelayMonoConnectorCampusonlineExtension` to match the new project name
+```bash
+composer require dbp/relay-mono-connector-campusonline-bundle
+```
 
 ## Integration into the API Server
 
-* Push your bundle on a git server, in this example we'll use `git@gitlab.tugraz.at:dbp/relay/dbp-relay-your-bundle.git`
-* Add the repository to your composer.json (as soon as you published your bundle to [Packagist](https://packagist.org/)
-  you can remove that block again):
-
-```json
-    "repositories": [
-        {
-            "type": "vcs",
-            "url": "git@gitlab.tugraz.at:dbp/relay/dbp-relay-your-bundle.git"
-        }
-    ],
-```
-
-* Add the bundle package as a dependency:
-
-```bash
-composer require dbp/relay-your-bundle=dev-main
-```
-
-* Add the bundle to your `config/bundles.php`:
+* Add the necessary bundles to your `config/bundles.php`:
 
 ```php
 ...
-Dbp\Relay\YourBundle\DbpRelayYourBundle::class => ['all' => true],
-DBP\API\CoreBundle\DbpCoreBundle::class => ['all' => true],
+Dbp\Relay\MonoBundle\DbpRelayMonoBundle::class => ['all' => true],
+Dbp\Relay\MonoConnectorCampusonlineBundle\DbpRelayMonoConnectorCampusonlineBundle::class => ['all' => true],
+Dbp\Relay\CoreBundle\DbpRelayCoreBundle::class => ['all' => true],
 ];
 ```
 
@@ -61,20 +27,26 @@ DBP\API\CoreBundle\DbpCoreBundle::class => ['all' => true],
 
 ## Configuration
 
-The bundle has a `example_config` (add your config here) configuration value that you can specify in your
-app, either by hard-coding it, or by referencing an environment variable.
-
 For this create `config/packages/dbp_relay_mono_connector_campusonline.yaml` in the app with the following
 content:
 
 ```yaml
 dbp_relay_mono_connector_campusonline:
-  example_config: 42
-  # example_config: '%env(EXAMPLE_CONFIG)%'
+  payment_types:
+    tuition_fee:
+      api_url: '%env(resolve:MONO_CONNECTOR_CAMPUSONLINE_API_URL)%'
+      client_id: '%env(MONO_CONNECTOR_CAMPUSONLINE_CLIENT_ID)%'
+      client_secret: '%env(MONO_CONNECTOR_CAMPUSONLINE_CLIENT_SECRET)%'
+      ldap_host: '%env(MONO_CONNECTOR_CAMPUSONLINE_LDAP_HOST)%'
+      ldap_base_dn: '%env(MONO_CONNECTOR_CAMPUSONLINE_LDAP_BASE_DN)%'
+      ldap_username: '%env(MONO_CONNECTOR_CAMPUSONLINE_LDAP_USERNAME)%'
+      ldap_password: '%env(MONO_CONNECTOR_CAMPUSONLINE_LDAP_PASSWORD)%'
+      ldap_encryption: 'simple_tls'
+      ldap_identifier_attribute: 'cn'
+      ldap_obfuscated_id_attribute: 'CO-OBFUSCATED-C-IDENT'
+      ldap_given_name_attribute: 'givenName'
+      ldap_family_name_attribute: 'sn'
 ```
-
-The value gets read in `DbpRelayMonoConnectorCampusonlineExtension` (your extension will be named differently)
-and passed when creating the `MyCustomService` service.
 
 For more info on bundle configuration see [Symfony bundles configuration](https://symfony.com/doc/current/bundles/configuration.html).
 
@@ -90,6 +62,6 @@ For more info on bundle configuration see [Symfony bundles configuration](https:
 Don't forget you need to pull down your dependencies in your main application if you are installing packages in a bundle.
 
 ```bash
-# updates and installs dependencies from dbp/relay-your-bundle
-composer update dbp/relay-your-bundle
+# updates and installs dependencies from dbp/relay-mono-connector-campusonline-bundle
+composer update dbp/relay-mono-connector-campusonline-bundle
 ```

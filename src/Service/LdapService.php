@@ -23,7 +23,7 @@ class LdapService implements LoggerAwareInterface, ServiceSubscriberInterface
     private $attributes = [
         'ldap_obfuscated_id_attribute' => 'obfuscatedId',
         'ldap_given_name_attribute' => 'givenName',
-        'ldap_given_family_attribute' => 'familyName',
+        'ldap_family_name_attribute' => 'familyName',
     ];
 
     /**

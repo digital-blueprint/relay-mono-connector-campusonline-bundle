@@ -80,6 +80,7 @@ class TuitionFeeService extends AbstractCampusonlineService implements BackendSe
             $response = $client->get($uri);
             $tuitionFeeData = $this->parseTuitionFeeDataResponse($response);
         } catch (RequestException $e) {
+            throw ApiError::withDetails(Response::HTTP_INTERNAL_SERVER_ERROR, 'Communication error with backend!', 'mono:backend-communication-error', ['message' => $e->getMessage()]);
         }
 
         return $tuitionFeeData;
@@ -126,6 +127,7 @@ class TuitionFeeService extends AbstractCampusonlineService implements BackendSe
 
             return $response->getStatusCode() === 200;
         } catch (RequestException $e) {
+            throw ApiError::withDetails(Response::HTTP_INTERNAL_SERVER_ERROR, 'Communication error with backend!', 'mono:backend-communication-error', ['message' => $e->getMessage()]);
         }
 
         return false;

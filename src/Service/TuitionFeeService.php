@@ -34,8 +34,7 @@ class TuitionFeeService extends AbstractCampusonlineService implements BackendSe
     public function __construct(
         LdapService $ldapService,
         UserSessionInterface $userSession
-    )
-    {
+    ) {
         $this->ldapService = $ldapService;
         $this->userSession = $userSession;
     }

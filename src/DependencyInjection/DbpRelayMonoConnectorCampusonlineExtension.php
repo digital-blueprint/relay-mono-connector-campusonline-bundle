@@ -5,7 +5,6 @@ declare(strict_types=1);
 namespace Dbp\Relay\MonoConnectorCampusonlineBundle\DependencyInjection;
 
 use Dbp\Relay\CoreBundle\Extension\ExtensionTrait;
-use Dbp\Relay\MonoConnectorCampusonlineBundle\Service\LdapService;
 use Dbp\Relay\MonoConnectorCampusonlineBundle\Service\TuitionFeeService;
 use Symfony\Component\Config\FileLocator;
 use Symfony\Component\DependencyInjection\ContainerBuilder;

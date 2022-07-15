@@ -118,7 +118,7 @@ class ApiTest extends TestCase
         $this->conn->setClientHandler(HandlerStack::create($mockHandler));
 
         $this->api->registerPayment('DEADBEEF', 1.25);
-        $this->assertSame((string) $mockHandler->getLastRequest()->getBody(), 'personUid=DEADBEEF&amount=1.25');
+        $this->assertSame((string) $mockHandler->getLastRequest()->getBody(), '{"personUid":"DEADBEEF","amount":1.25}');
     }
 
     public function testRegisterPaymentPersonNotFound()

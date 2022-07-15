@@ -105,17 +105,19 @@ class TuitionFeeApi
         return $fees;
     }
 
-    public function registerPayment(string $obfuscatedId, float $amount): void
+    public function registerPayment(string $obfuscatedId, float $amount): bool
     {
         $client = $this->connection->getClient();
         $uriTemplate = new UriTemplate('co/tuition-fee-payment-interface/api/payment-registrations');
         $uri = (string) $uriTemplate->expand();
 
-        $client->post($uri, [
-            'form_params' => [
+        $response = $client->post($uri, [
+            'json' => [
                 'personUid' => $obfuscatedId,
                 'amount' => $amount,
             ],
         ]);
+
+        return $response->getStatusCode() === 200;
     }
 }

@@ -118,6 +118,6 @@ class TuitionFeeApi
             ],
         ]);
 
-        return $response->getStatusCode() === 200;
+        return $response->getStatusCode() === 201;
     }
 }

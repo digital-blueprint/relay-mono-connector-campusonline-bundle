@@ -76,7 +76,7 @@ class TuitionFeeService extends AbstractCampusonlineService implements BackendSe
                 $type = $payment->getType();
                 $api = $this->getApiByType($type);
                 $obfuscatedId = $payment->getLocalIdentifier();
-                $amount = (float)$payment->getAmount();
+                $amount = (float) $payment->getAmount();
                 $notified = $api->registerPayment($obfuscatedId, $amount);
             } catch (\Exception $e) {
                 throw ApiError::withDetails(Response::HTTP_INTERNAL_SERVER_ERROR, 'Communication error with backend!', 'mono:backend-communication-error', ['message' => $e->getMessage()]);
@@ -110,10 +110,10 @@ class TuitionFeeService extends AbstractCampusonlineService implements BackendSe
         $year = preg_replace('/^[^0-9]*([0-9]{2,4})[^0-9]*$/', '$1', $semester);
         if (strlen($year) === 2) {
             // first tuition fee in CAMPUSonline is "1950W"
-            if ((int)$year >= 50) {
-                $year = '19' . $year;
+            if ((int) $year >= 50) {
+                $year = '19'.$year;
             } else {
-                $year = '20' . $year;
+                $year = '20'.$year;
             }
         }
         $semesterKey = $year.$term;

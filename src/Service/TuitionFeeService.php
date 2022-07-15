@@ -4,23 +4,17 @@ declare(strict_types=1);
 
 namespace Dbp\Relay\MonoConnectorCampusonlineBundle\Service;
 
-use Dbp\CampusonlineApi\Rest\Tools;
 use Dbp\Relay\CoreBundle\API\UserSessionInterface;
 use Dbp\Relay\CoreBundle\Exception\ApiError;
 use Dbp\Relay\MonoBundle\Entity\Payment;
 use Dbp\Relay\MonoBundle\Entity\PaymentPersistence;
 use Dbp\Relay\MonoBundle\Service\BackendServiceInterface;
-use Dbp\Relay\MonoConnectorCampusonlineBundle\Rest\TuitionFee\TuitionFeeData;
-use GuzzleHttp\Exception\RequestException;
-use League\Uri\UriTemplate;
-use Psr\Http\Message\ResponseInterface;
+use Dbp\Relay\MonoConnectorCampusonlineBundle\Rest\Connection;
+use Dbp\Relay\MonoConnectorCampusonlineBundle\Rest\TuitionFee\TuitionFeeApi;
 use Symfony\Component\HttpFoundation\Response;
 
 class TuitionFeeService extends AbstractCampusonlineService implements BackendServiceInterface
 {
-    private const FIELD_AMOUNT = 'amount';
-    private const FIELD_SEMESTER_KEY = 'semesterKey';
-
     /**
      * @var LdapService
      */
@@ -56,8 +50,14 @@ class TuitionFeeService extends AbstractCampusonlineService implements BackendSe
             $payment->setGivenName($ldapData->givenName);
             $payment->setFamilyName($ldapData->familyName);
 
-            $api = $this->getApiByType($payment->getType());
-            $tuitionFeeData = $this->getCurrentOpenFeeByObfuscatedId($api, $payment);
+            try {
+                $api = $this->getApiByType($payment->getType());
+                $obfuscatedId = $payment->getLocalIdentifier();
+                $semesterKey = $this->convertSemesterToSemesterKey($payment->getData());
+                $tuitionFeeData = $api->getSemesterFee($obfuscatedId, $semesterKey);
+            } catch (\Exception $e) {
+                throw ApiError::withDetails(Response::HTTP_INTERNAL_SERVER_ERROR, 'Communication error with backend!', 'mono:backend-communication-error', ['message' => $e->getMessage()]);
+            }
             $payment->setAmount((string) $tuitionFeeData->getAmountAbs());
             $payment->setCurrency(Payment::PRICE_CURRENCY_EUR);
 
@@ -67,69 +67,57 @@ class TuitionFeeService extends AbstractCampusonlineService implements BackendSe
         return false;
     }
 
-    private function getCurrentOpenFeeByObfuscatedId($api, PaymentPersistence $payment): ?TuitionFeeData
-    {
-        $tuitionFeeData = null;
-
-        $uriTemplate = new UriTemplate('co/tuition-fee-payment-interface/api/open-fees/{obfuscatedId}/current');
-        $uri = (string) $uriTemplate->expand([
-            'obfuscatedId' => $payment->getLocalIdentifier(),
-        ]);
-        try {
-            $client = $api->getClient();
-            $response = $client->get($uri);
-            $tuitionFeeData = $this->parseTuitionFeeDataResponse($response);
-        } catch (RequestException $e) {
-            throw ApiError::withDetails(Response::HTTP_INTERNAL_SERVER_ERROR, 'Communication error with backend!', 'mono:backend-communication-error', ['message' => $e->getMessage()]);
-        }
-
-        return $tuitionFeeData;
-    }
-
-    private function parseTuitionFeeDataResponse(ResponseInterface $response): TuitionFeeData
-    {
-        $content = (string) $response->getBody();
-        $json = Tools::decodeJSON($content, true);
-
-        $tuitionFeeData = new TuitionFeeData();
-        $tuitionFeeData->setAmount($json[self::FIELD_AMOUNT] ?? null);
-        $tuitionFeeData->setSemesterKey($json[self::FIELD_SEMESTER_KEY] ?? null);
-
-        return $tuitionFeeData;
-    }
-
     public function notify(PaymentPersistence &$payment): bool
     {
-        if (!$payment->getNotifiedAt()) {
-            $api = $this->getApiByType($payment->getType());
+        $notified = false;
 
-            return $this->registerPayment($api, $payment);
+        if (!$payment->getNotifiedAt()) {
+            try {
+                $type = $payment->getType();
+                $api = $this->getApiByType($type);
+                $obfuscatedId = $payment->getLocalIdentifier();
+                $amount = (float)$payment->getAmount();
+                $notified = $api->registerPayment($obfuscatedId, $amount);
+            } catch (\Exception $e) {
+                throw ApiError::withDetails(Response::HTTP_INTERNAL_SERVER_ERROR, 'Communication error with backend!', 'mono:backend-communication-error', ['message' => $e->getMessage()]);
+            }
         }
 
-        return false;
+        return $notified;
     }
 
-    private function registerPayment($api, PaymentPersistence $payment)
+    private function getApiByType(string $type): TuitionFeeApi
     {
-        $uriTemplate = new UriTemplate('co/tuition-fee-payment-interface/api/payment-registrations');
-        $uri = (string) $uriTemplate->expand([
-            'obfuscatedId' => $payment->getLocalIdentifier(),
-        ]);
-        try {
-            $client = $api->getClient();
-            /** @var ResponseInterface $response */
-            $response = $client->post($uri, [
-                'form_params' => [
-                    'personUid' => $payment->getLocalIdentifier(),
-                    'amount' => $payment->getAmount(),
-                ],
-            ]);
+        $config = $this->getConfigByType($type);
+        $baseUrl = $config['api_url'] ?? '';
+        $clientId = $config['client_id'] ?? '';
+        $clientSecret = $config['client_secret'] ?? '';
 
-            return $response->getStatusCode() === 200;
-        } catch (RequestException $e) {
-            throw ApiError::withDetails(Response::HTTP_INTERNAL_SERVER_ERROR, 'Communication error with backend!', 'mono:backend-communication-error', ['message' => $e->getMessage()]);
+        $connection = new Connection(
+            $baseUrl,
+            $clientId,
+            $clientSecret
+        );
+
+        $api = new TuitionFeeApi($connection);
+
+        return $api;
+    }
+
+    private function convertSemesterToSemesterKey(string $semester): string
+    {
+        $term = preg_replace('/^[^SW]*([SW])[^SW]*$/', '$1', $semester);
+        $year = preg_replace('/^[^0-9]*([0-9]{2,4})[^0-9]*$/', '$1', $semester);
+        if (strlen($year) === 2) {
+            // first tuition fee in CAMPUSonline is "1950W"
+            if ((int)$year >= 50) {
+                $year = '19' . $year;
+            } else {
+                $year = '20' . $year;
+            }
         }
+        $semesterKey = $year.$term;
 
-        return false;
+        return $semesterKey;
     }
 }

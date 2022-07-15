@@ -20,7 +20,7 @@ class TuitionFeeApi
     {
         $client = $this->connection->getClient();
 
-        $uriTemplate = new UriTemplate('/QSYSTEM_TUG/co/tuition-fee-payment-interface/api/version');
+        $uriTemplate = new UriTemplate('co/tuition-fee-payment-interface/api/version');
         $uri = (string) $uriTemplate->expand();
         $response = $client->get($uri);
 
@@ -35,7 +35,7 @@ class TuitionFeeApi
     public function getAuthenticatedVersion(): VersionData
     {
         $client = $this->connection->getClient();
-        $uriTemplate = new UriTemplate('/QSYSTEM_TUG/co/tuition-fee-payment-interface/api/authenticated-version');
+        $uriTemplate = new UriTemplate('co/tuition-fee-payment-interface/api/authenticated-version');
         $uri = (string) $uriTemplate->expand();
         $response = $client->get($uri);
 
@@ -50,7 +50,7 @@ class TuitionFeeApi
     public function getCurrentFee(string $obfuscatedId): TuitionFeeData
     {
         $client = $this->connection->getClient();
-        $uriTemplate = new UriTemplate('/QSYSTEM_TUG/co/tuition-fee-payment-interface/api/open-fees/{obfuscatedId}/current');
+        $uriTemplate = new UriTemplate('co/tuition-fee-payment-interface/api/open-fees/{obfuscatedId}/current');
         $uri = (string) $uriTemplate->expand([
             'obfuscatedId' => $obfuscatedId,
         ]);
@@ -67,7 +67,7 @@ class TuitionFeeApi
     public function getSemesterFee(string $obfuscatedId, string $semesterKey): TuitionFeeData
     {
         $client = $this->connection->getClient();
-        $uriTemplate = new UriTemplate('/QSYSTEM_TUG/co/tuition-fee-payment-interface/api/open-fees/{obfuscatedId}/{semesterKey}');
+        $uriTemplate = new UriTemplate('co/tuition-fee-payment-interface/api/open-fees/{obfuscatedId}/semester/{semesterKey}');
         $uri = (string) $uriTemplate->expand([
             'obfuscatedId' => $obfuscatedId,
             'semesterKey' => $semesterKey,
@@ -88,7 +88,7 @@ class TuitionFeeApi
     public function getFees(string $obfuscatedId): array
     {
         $client = $this->connection->getClient();
-        $uriTemplate = new UriTemplate('/QSYSTEM_TUG/co/tuition-fee-payment-interface/api/open-fees/{obfuscatedId}');
+        $uriTemplate = new UriTemplate('co/tuition-fee-payment-interface/api/open-fees/{obfuscatedId}');
         $uri = (string) $uriTemplate->expand([
             'obfuscatedId' => $obfuscatedId,
         ]);
@@ -108,7 +108,7 @@ class TuitionFeeApi
     public function registerPayment(string $obfuscatedId, float $amount): void
     {
         $client = $this->connection->getClient();
-        $uriTemplate = new UriTemplate('/QSYSTEM_TUG/co/tuition-fee-payment-interface/api/payment-registrations');
+        $uriTemplate = new UriTemplate('co/tuition-fee-payment-interface/api/payment-registrations');
         $uri = (string) $uriTemplate->expand();
 
         $client->post($uri, [

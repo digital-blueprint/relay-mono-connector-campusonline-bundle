@@ -35,7 +35,11 @@ class TuitionFeeService extends AbstractCampusonlineService implements BackendSe
 
     public function updateData(PaymentPersistence &$payment): bool
     {
-        if (!$payment->getDataUpdatedAt()) {
+        $updateExpiration = new \DateTime('-1 minute');
+        if (
+            !$payment->getDataUpdatedAt()
+            || $payment->getDataUpdatedAt() <= $updateExpiration
+        ) {
             $userIdentifier = $this->userSession->getUserIdentifier();
             if (!$userIdentifier) {
                 throw ApiError::withDetails(Response::HTTP_UNAUTHORIZED, 'User identifier empty!', 'mono:user-identifier-empty');

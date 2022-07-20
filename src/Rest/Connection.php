@@ -89,7 +89,7 @@ class Connection implements LoggerAwareInterface
         $client = new Client($client_options);
 
         try {
-            $response = $client->post('co/public/sec/auth/realms/CAMPUSonline/protocol/openid-connect/token', [
+            $response = $client->post($this->baseUrl.'co/public/sec/auth/realms/CAMPUSonline/protocol/openid-connect/token', [
                 'form_params' => [
                     'client_id' => $this->clientId,
                     'client_secret' => $this->clientSecret,

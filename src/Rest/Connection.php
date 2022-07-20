@@ -80,8 +80,13 @@ class Connection implements LoggerAwareInterface
     private function refreshToken(): void
     {
         $stack = HandlerStack::create($this->clientHandler);
+        $base_uri = $this->baseUrl;
+        if (substr($base_uri, -1) !== '/') {
+            $base_uri .= '/';
+        }
         $client_options = [
             'handler' => $stack,
+            'base_uri' => $base_uri,
         ];
         if ($this->logger !== null) {
             $stack->push(Tools::createLoggerMiddleware($this->logger));
@@ -89,7 +94,7 @@ class Connection implements LoggerAwareInterface
         $client = new Client($client_options);
 
         try {
-            $response = $client->post($this->baseUrl.'co/public/sec/auth/realms/CAMPUSonline/protocol/openid-connect/token', [
+            $response = $client->post('co/public/sec/auth/realms/CAMPUSonline/protocol/openid-connect/token', [
                 'form_params' => [
                     'client_id' => $this->clientId,
                     'client_secret' => $this->clientSecret,

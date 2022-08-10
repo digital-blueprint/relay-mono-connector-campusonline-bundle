@@ -2,10 +2,10 @@ services:
   Dbp\Relay\MonoConnectorCampusonlineBundle\Service\LdapService:
     autowire: true
     autoconfigure: true
+
   Dbp\Relay\MonoConnectorCampusonlineBundle\Service\TuitionFeeService:
     autowire: true
     autoconfigure: true
     public: true
-  dbp.mono.campusonline:
-    alias: Dbp\Relay\MonoConnectorCampusonlineBundle\Service\TuitionFeeService
-    public: true
+    tags:
+      - { name: monolog.logger, channel: 'dbp_relay_mono_audit' }

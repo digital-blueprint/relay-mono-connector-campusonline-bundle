@@ -11,10 +11,15 @@ use Dbp\Relay\MonoBundle\Entity\PaymentPersistence;
 use Dbp\Relay\MonoBundle\Service\BackendServiceInterface;
 use Dbp\Relay\MonoConnectorCampusonlineBundle\Rest\Connection;
 use Dbp\Relay\MonoConnectorCampusonlineBundle\Rest\TuitionFee\TuitionFeeApi;
+use Psr\Log\LoggerAwareInterface;
+use Psr\Log\LoggerAwareTrait;
+use Psr\Log\LoggerInterface;
 use Symfony\Component\HttpFoundation\Response;
 
-class TuitionFeeService extends AbstractCampusonlineService implements BackendServiceInterface
+class TuitionFeeService extends AbstractCampusonlineService implements BackendServiceInterface, LoggerAwareInterface
 {
+    use LoggerAwareTrait;
+
     /**
      * @var LdapService
      */
@@ -26,9 +31,11 @@ class TuitionFeeService extends AbstractCampusonlineService implements BackendSe
     private $userSession;
 
     public function __construct(
+        LoggerInterface $logger,
         LdapService $ldapService,
         UserSessionInterface $userSession
     ) {
+        $this->logger = $logger;
         $this->ldapService = $ldapService;
         $this->userSession = $userSession;
     }
@@ -104,6 +111,7 @@ class TuitionFeeService extends AbstractCampusonlineService implements BackendSe
         );
 
         $api = new TuitionFeeApi($connection);
+        $api->setLogger($this->logger);
 
         return $api;
     }

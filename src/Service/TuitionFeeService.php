@@ -97,6 +97,11 @@ class TuitionFeeService extends AbstractCampusonlineService implements BackendSe
         return $notified;
     }
 
+    public function cleanup(PaymentPersistence &$payment): bool
+    {
+        return true;
+    }
+
     private function getApiByType(string $type): TuitionFeeApi
     {
         $config = $this->getConfigByType($type);

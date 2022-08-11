@@ -71,6 +71,7 @@ class TuitionFeeService extends AbstractCampusonlineService implements BackendSe
             }
             $payment->setAmount((string) $tuitionFeeData->getAmountAbs());
             $payment->setCurrency(Payment::PRICE_CURRENCY_EUR);
+            $payment->setAlternateName('Studienbeitrag ('.$semesterKey.') für '.$ldapData->givenName.' '.$ldapData->familyName);
 
             return true;
         }

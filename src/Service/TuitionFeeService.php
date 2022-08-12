@@ -69,7 +69,7 @@ class TuitionFeeService extends AbstractCampusonlineService implements BackendSe
             } catch (\Exception $e) {
                 throw ApiError::withDetails(Response::HTTP_INTERNAL_SERVER_ERROR, 'Communication error with backend!', 'mono:backend-communication-error', ['message' => $e->getMessage()]);
             }
-            $payment->setAmount((string) $tuitionFeeData->getAmountAbs());
+            $payment->setAmount((string) $tuitionFeeData->getAmount());
             $payment->setCurrency(Payment::PRICE_CURRENCY_EUR);
             $payment->setAlternateName('Studienbeitrag ('.$semesterKey.') für '.$ldapData->givenName.' '.$ldapData->familyName);
 

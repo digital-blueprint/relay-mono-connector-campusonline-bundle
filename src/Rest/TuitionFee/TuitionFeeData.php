@@ -28,14 +28,6 @@ class TuitionFeeData
     }
 
     /**
-     * @return float
-     */
-    public function getAmountAbs(): ?float
-    {
-        return abs($this->amount);
-    }
-
-    /**
      * @var string
      */
     protected $semesterKey;

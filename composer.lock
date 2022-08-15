@@ -277,8 +277,14 @@
             "version": "dev-main",
             "source": {
                 "type": "git",
-                "url": "git@gitlab.tugraz.at:dbp/mono/dbp-relay-mono-bundle.git",
-                "reference": "61f96583ac7dfbb5ab6d507bff9c8b984331f255"
+                "url": "https://gitlab.tugraz.at/dbp/mono/dbp-relay-mono-bundle.git",
+                "reference": "e11400a65bef7db70ea7e478e03fafd2050e3cb3"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://gitlab.tugraz.at/api/v4/projects/dbp%2Fmono%2Fdbp-relay-mono-bundle/repository/archive.zip?sha=e11400a65bef7db70ea7e478e03fafd2050e3cb3",
+                "reference": "e11400a65bef7db70ea7e478e03fafd2050e3cb3",
+                "shasum": ""
             },
             "require": {
                 "api-platform/core": "^2.6",
@@ -341,7 +347,11 @@
                 "AGPL-3.0-or-later"
             ],
             "description": "A template bundle for the Relay API gateway",
-            "time": "2022-08-10T05:32:58+00:00"
+            "support": {
+                "source": "https://gitlab.tugraz.at/dbp/mono/dbp-relay-mono-bundle/-/tree/main",
+                "issues": "https://gitlab.tugraz.at/dbp/mono/dbp-relay-mono-bundle/-/issues"
+            },
+            "time": "2022-08-11T16:31:27+02:00"
         },
         {
             "name": "directorytree/ldaprecord",
@@ -8790,16 +8800,16 @@
         },
         {
             "name": "twig/twig",
-            "version": "v3.4.1",
+            "version": "v3.4.2",
             "source": {
                 "type": "git",
                 "url": "https://github.com/twigphp/Twig.git",
-                "reference": "e939eae92386b69b49cfa4599dd9bead6bf4a342"
+                "reference": "e07cdd3d430cd7e453c31b36eb5ad6c0c5e43077"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/twigphp/Twig/zipball/e939eae92386b69b49cfa4599dd9bead6bf4a342",
-                "reference": "e939eae92386b69b49cfa4599dd9bead6bf4a342",
+                "url": "https://api.github.com/repos/twigphp/Twig/zipball/e07cdd3d430cd7e453c31b36eb5ad6c0c5e43077",
+                "reference": "e07cdd3d430cd7e453c31b36eb5ad6c0c5e43077",
                 "shasum": ""
             },
             "require": {
@@ -8850,7 +8860,7 @@
             ],
             "support": {
                 "issues": "https://github.com/twigphp/Twig/issues",
-                "source": "https://github.com/twigphp/Twig/tree/v3.4.1"
+                "source": "https://github.com/twigphp/Twig/tree/v3.4.2"
             },
             "funding": [
                 {
@@ -8862,7 +8872,7 @@
                     "type": "tidelift"
                 }
             ],
-            "time": "2022-05-17T05:48:52+00:00"
+            "time": "2022-08-12T06:47:24+00:00"
         },
         {
             "name": "webmozart/assert",
@@ -12358,5 +12368,5 @@
     "platform-overrides": {
         "php": "7.3"
     },
-    "plugin-api-version": "2.0.0"
+    "plugin-api-version": "2.3.0"
 }

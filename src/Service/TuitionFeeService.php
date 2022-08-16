@@ -15,6 +15,7 @@ use Psr\Log\LoggerAwareInterface;
 use Psr\Log\LoggerAwareTrait;
 use Psr\Log\LoggerInterface;
 use Symfony\Component\HttpFoundation\Response;
+use Symfony\Contracts\Translation\TranslatorInterface;
 
 class TuitionFeeService extends AbstractCampusonlineService implements BackendServiceInterface, LoggerAwareInterface
 {
@@ -30,12 +31,19 @@ class TuitionFeeService extends AbstractCampusonlineService implements BackendSe
      */
     private $userSession;
 
+    /**
+     * @var TranslatorInterface
+     */
+    private $translator;
+
     public function __construct(
         LoggerInterface $logger,
+        TranslatorInterface $translator,
         LdapService $ldapService,
         UserSessionInterface $userSession
     ) {
         $this->logger = $logger;
+        $this->translator = $translator;
         $this->ldapService = $ldapService;
         $this->userSession = $userSession;
     }
@@ -71,7 +79,13 @@ class TuitionFeeService extends AbstractCampusonlineService implements BackendSe
             }
             $payment->setAmount((string) $tuitionFeeData->getAmount());
             $payment->setCurrency(Payment::PRICE_CURRENCY_EUR);
-            $payment->setAlternateName('Studienbeitrag ('.$semesterKey.') für '.$ldapData->givenName.' '.$ldapData->familyName);
+            $parameters = [
+                'semesterKey' => $semesterKey,
+                'givenName' => $payment->getGivenName(),
+                'familyName' => $payment->getFamilyName(),
+            ];
+            $alternateName = $this->translator->trans('dbp_relay_mono_connector_campusonline.tuition_fee.alternate_name', $parameters);
+            $payment->setAlternateName($alternateName);
 
             return true;
         }

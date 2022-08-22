@@ -281,12 +281,12 @@
             "source": {
                 "type": "git",
                 "url": "https://gitlab.tugraz.at/dbp/mono/dbp-relay-mono-bundle.git",
-                "reference": "8c856ffb3a36a8f188d7cb2ba2cffd1437cfd951"
+                "reference": "32fd7f125aba5b4a99ee370c341b6df9271a4941"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://gitlab.tugraz.at/api/v4/projects/dbp%2Fmono%2Fdbp-relay-mono-bundle/repository/archive.zip?sha=8c856ffb3a36a8f188d7cb2ba2cffd1437cfd951",
-                "reference": "8c856ffb3a36a8f188d7cb2ba2cffd1437cfd951",
+                "url": "https://gitlab.tugraz.at/api/v4/projects/dbp%2Fmono%2Fdbp-relay-mono-bundle/repository/archive.zip?sha=32fd7f125aba5b4a99ee370c341b6df9271a4941",
+                "reference": "32fd7f125aba5b4a99ee370c341b6df9271a4941",
                 "shasum": ""
             },
             "require": {
@@ -355,7 +355,7 @@
                 "source": "https://gitlab.tugraz.at/dbp/mono/dbp-relay-mono-bundle/-/tree/main",
                 "issues": "https://gitlab.tugraz.at/dbp/mono/dbp-relay-mono-bundle/-/issues"
             },
-            "time": "2022-08-21T02:13:38+02:00"
+            "time": "2022-08-22T02:14:42+02:00"
         },
         {
             "name": "directorytree/ldaprecord",

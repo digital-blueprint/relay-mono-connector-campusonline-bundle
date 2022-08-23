@@ -50,6 +50,8 @@ class TuitionFeeService extends AbstractCampusonlineService implements BackendSe
 
     public function updateData(PaymentPersistence &$payment): bool
     {
+        $changed = false;
+
         $updateExpiration = new \DateTime('-1 minute');
         if (
             !$payment->getDataUpdatedAt()
@@ -79,18 +81,24 @@ class TuitionFeeService extends AbstractCampusonlineService implements BackendSe
             }
             $payment->setAmount((string) $tuitionFeeData->getAmount());
             $payment->setCurrency(Payment::PRICE_CURRENCY_EUR);
-            $parameters = [
-                'semesterKey' => $semesterKey,
-                'givenName' => $payment->getGivenName(),
-                'familyName' => $payment->getFamilyName(),
-            ];
-            $alternateName = $this->translator->trans('dbp_relay_mono_connector_campusonline.tuition_fee.alternate_name', $parameters);
-            $payment->setAlternateName($alternateName);
 
-            return true;
+            $changed = true;
         }
 
-        return false;
+        // These things never hit the backend and are translated, so try to update them always
+        $semesterKey = $this->convertSemesterToSemesterKey($payment->getData());
+        $parameters = [
+            'semesterKey' => $semesterKey,
+            'givenName' => $payment->getGivenName(),
+            'familyName' => $payment->getFamilyName(),
+        ];
+        $alternateName = $this->translator->trans('dbp_relay_mono_connector_campusonline.tuition_fee.alternate_name', $parameters);
+        if ($payment->getAlternateName() !== $alternateName) {
+            $changed = true;
+            $payment->setAlternateName($alternateName);
+        }
+
+        return $changed;
     }
 
     public function notify(PaymentPersistence &$payment): bool

@@ -74,7 +74,7 @@ class TuitionFeeService extends AbstractCampusonlineService implements BackendSe
             try {
                 $api = $this->getApiByType($payment->getType());
                 $obfuscatedId = $payment->getLocalIdentifier();
-                $semesterKey = $this->convertSemesterToSemesterKey($payment->getData());
+                $semesterKey = self::convertSemesterToSemesterKey($payment->getData());
                 $tuitionFeeData = $api->getSemesterFee($obfuscatedId, $semesterKey);
             } catch (\Exception $e) {
                 throw ApiError::withDetails(Response::HTTP_INTERNAL_SERVER_ERROR, 'Communication error with backend!', 'mono:backend-communication-error', ['message' => $e->getMessage()]);
@@ -86,7 +86,7 @@ class TuitionFeeService extends AbstractCampusonlineService implements BackendSe
         }
 
         // These things never hit the backend and are translated, so try to update them always
-        $semesterKey = $this->convertSemesterToSemesterKey($payment->getData());
+        $semesterKey = self::convertSemesterToSemesterKey($payment->getData());
         $parameters = [
             'semesterKey' => $semesterKey,
             'givenName' => $payment->getGivenName(),
@@ -144,7 +144,7 @@ class TuitionFeeService extends AbstractCampusonlineService implements BackendSe
         return $api;
     }
 
-    private function convertSemesterToSemesterKey(string $semester): string
+    public static function convertSemesterToSemesterKey(string $semester): string
     {
         $term = preg_replace('/^[^SW]*([SW])[^SW]*$/', '$1', $semester);
         $year = preg_replace('/^[^0-9]*([0-9]{2,4})[^0-9]*$/', '$1', $semester);

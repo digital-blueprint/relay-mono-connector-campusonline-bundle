@@ -58,10 +58,13 @@ class TuitionFeeApi implements LoggerAwareInterface
         return $versionData;
     }
 
+    /**
+     * Returns the API version information.
+     */
     public function getAuthenticatedVersion(): VersionData
     {
         $client = $this->connection->getClient();
-        $uriTemplate = new UriTemplate('co/tuition-fee-payment-interface/api/authenticated-version');
+        $uriTemplate = new UriTemplate('co/tuition-fee-payment-interface/api/version/authenticated-version');
         $uri = (string) $uriTemplate->expand();
 
         try {

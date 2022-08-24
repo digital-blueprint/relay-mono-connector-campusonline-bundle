@@ -34,6 +34,7 @@ class TuitionFeeApi implements LoggerAwareInterface
         $title = $json['title'] ?? 'Unknown error';
         $type = $json['type'] ?? 'unknown type';
         $message = "[$status] $title ($type)";
+
         return new ApiException($message);
     }
 
@@ -155,7 +156,7 @@ class TuitionFeeApi implements LoggerAwareInterface
         return $fees;
     }
 
-    public function registerPayment(string $obfuscatedId, float $amount): bool
+    public function registerPayment(string $obfuscatedId, float $amount)
     {
         $client = $this->connection->getClient();
         $uriTemplate = new UriTemplate('co/tuition-fee-payment-interface/api/payment-registrations');
@@ -175,11 +176,14 @@ class TuitionFeeApi implements LoggerAwareInterface
             throw self::createResponseError($e);
         }
 
+        // The API docs say that it returns 201 when the payment is complete, so check just to be sure
+        if ($response->getStatusCode() !== 201) {
+            throw new ApiException('Wrong status code: '.$response->getStatusCode());
+        }
+
         $this->logger->debug('register payment response', [
             'headers' => $response->getHeaders(),
             'body' => (string) $response->getBody(),
         ]);
-
-        return $response->getStatusCode() === 201;
     }
 }

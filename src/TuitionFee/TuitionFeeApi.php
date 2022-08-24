@@ -193,14 +193,15 @@ class TuitionFeeApi implements LoggerAwareInterface
             throw self::createResponseError($e);
         }
 
+        $this->logger->debug('register payment response', [
+            'status' => $response->getStatusCode(),
+            'headers' => $response->getHeaders(),
+            'body' => (string) $response->getBody(),
+        ]);
+
         // The API docs say that it returns 201 when the payment is complete, so check just to be sure
         if ($response->getStatusCode() !== 201) {
             throw new ApiException('Wrong status code: '.$response->getStatusCode());
         }
-
-        $this->logger->debug('register payment response', [
-            'headers' => $response->getHeaders(),
-            'body' => (string) $response->getBody(),
-        ]);
     }
 }

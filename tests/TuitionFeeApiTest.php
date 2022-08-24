@@ -96,7 +96,7 @@ class TuitionFeeApiTest extends TestCase
             new Response(200, ['Content-Type' => 'application/json'], '{"items":[{"amount":-16,"semesterKey":"1950W"},{"amount":-0.5,"semesterKey":"1951S"},{"amount":0,"semesterKey":"1951W"}],"totalAmount":-16.5}'),
         ]);
 
-        $feeList = $this->api->getFees('DEADBEEF');
+        $feeList = $this->api->getAllFees('DEADBEEF');
         $this->assertCount(3, $feeList->getItems());
         $this->assertSame(-16.5, $feeList->getTotalAmount());
         $this->assertSame($feeList->getItems()[0]->getSemesterKey(), '1950W');
@@ -109,7 +109,7 @@ class TuitionFeeApiTest extends TestCase
         ]);
 
         $this->expectException(ApiException::class);
-        $this->api->getFees('DOESNTEXIST');
+        $this->api->getAllFees('DOESNTEXIST');
     }
 
     public function testRegisterPayment()
@@ -119,7 +119,7 @@ class TuitionFeeApiTest extends TestCase
         ]);
         $this->conn->setClientHandler(HandlerStack::create($mockHandler));
 
-        $this->api->registerPayment('DEADBEEF', 1.25);
+        $this->api->registerPaymentForCurrentSemester('DEADBEEF', 1.25);
         $this->assertSame((string) $mockHandler->getLastRequest()->getBody(), '{"personUid":"DEADBEEF","amount":1.25}');
     }
 
@@ -129,7 +129,7 @@ class TuitionFeeApiTest extends TestCase
             new Response(404, ['Content-Type' => 'application/json'], '{"status":404,"title":"Not Found","type":"exception:at.swgt.rest.client.exception.CoPublicApiWebApplicationException"}'),
         ]);
         $this->expectException(ApiException::class);
-        $this->api->registerPayment('NOTFOUND', 1.25);
+        $this->api->registerPaymentForCurrentSemester('NOTFOUND', 1.25);
     }
 
     public function testRegisterPaymentInvalidAmount()
@@ -138,6 +138,6 @@ class TuitionFeeApiTest extends TestCase
             new Response(400, ['Content-Type' => 'application/json'], '{"status":400,"title":"amount too small","type":"exception:javax.ws.rs.BadRequestException"}'),
         ]);
         $this->expectException(ApiException::class);
-        $this->api->registerPayment('DEADBEEF', 0);
+        $this->api->registerPaymentForCurrentSemester('DEADBEEF', 0);
     }
 }

@@ -144,11 +144,11 @@ class TuitionFeeApi implements LoggerAwareInterface
     }
 
     /**
-     * Returns a list of outstanding fees for person for all semesters.
+     * Returns a list of outstanding fees for a person for all semesters.
      *
      * @param string $obfuscatedId nr_obfuscated
      */
-    public function getFees(string $obfuscatedId): OpenFeeList
+    public function getAllFees(string $obfuscatedId): OpenFeeList
     {
         $client = $this->connection->getClient();
         $uriTemplate = new UriTemplate('co/tuition-fee-payment-interface/api/open-fees/{obfuscatedId}');
@@ -184,7 +184,7 @@ class TuitionFeeApi implements LoggerAwareInterface
      * @param string $obfuscatedId nr_obfuscated
      * @param float  $amount       Amount in Euro
      */
-    public function registerPayment(string $obfuscatedId, float $amount)
+    public function registerPaymentForCurrentSemester(string $obfuscatedId, float $amount)
     {
         $client = $this->connection->getClient();
         $uriTemplate = new UriTemplate('co/tuition-fee-payment-interface/api/payment-registrations');

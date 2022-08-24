@@ -5,8 +5,6 @@ declare(strict_types=1);
 namespace Dbp\Relay\MonoConnectorCampusonlineBundle\Service;
 
 use LdapRecord\Connection;
-use LdapRecord\Container;
-use LdapRecord\Models\Entry;
 use LdapRecord\Models\OpenLDAP\User;
 use Psr\Log\LoggerAwareInterface;
 use Psr\Log\LoggerAwareTrait;
@@ -55,22 +53,18 @@ class LdapService implements LoggerAwareInterface
         $this->providerConfig['use_tls'] = ($encryption === 'start_tls');
         $this->providerConfig['use_ssl'] = ($encryption === 'simple_tls');
         $this->providerConfig['port'] = ($encryption === 'start_tls') ? 389 : 636;
-
-        $connection = new Connection($this->providerConfig);
-        $connection->connect();
-        Container::addConnection($connection);
     }
 
     public function getDataByIdentifier($identifier): LdapData
     {
-        $data = new LdapData();
+        $connection = new Connection($this->providerConfig);
+        $connection->connect();
 
-        $query = User::query();
-        /** @var Entry $entry */
-        $entry = $query->where('objectClass', '=', 'person')
+        $entry = $connection->query()->model(new User())->where('objectClass', '=', 'person')
             ->whereEquals($this->config['ldap_identifier_attribute'], $identifier)
             ->first();
 
+        $data = new LdapData();
         foreach ($this->attributes as $attributeKey => $propertyName) {
             if (array_key_exists($attributeKey, $this->config)) {
                 $attribute = $this->config[$attributeKey];

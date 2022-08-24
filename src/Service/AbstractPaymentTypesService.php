@@ -21,11 +21,10 @@ abstract class AbstractPaymentTypesService
 
     protected function getConfigByType(string $type): array
     {
-        $config = [];
         if (array_key_exists($type, $this->config['payment_types'])) {
-            $config = $this->config['payment_types'][$type];
+            return $this->config['payment_types'][$type];
+        } else {
+            throw new \RuntimeException('Unknown payment type: '.$type);
         }
-
-        return $config;
     }
 }

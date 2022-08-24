@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace Dbp\Relay\MonoConnectorCampusonlineBundle\Rest;
+namespace Dbp\Relay\MonoConnectorCampusonlineBundle\TuitionFee;
 
 use Dbp\CampusonlineApi\Rest\ApiException;
 use Dbp\CampusonlineApi\Rest\Tools;

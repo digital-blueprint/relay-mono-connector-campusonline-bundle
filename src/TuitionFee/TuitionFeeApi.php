@@ -2,9 +2,8 @@
 
 declare(strict_types=1);
 
-namespace Dbp\Relay\MonoConnectorCampusonlineBundle\Rest\TuitionFee;
+namespace Dbp\Relay\MonoConnectorCampusonlineBundle\TuitionFee;
 
-use Dbp\Relay\MonoConnectorCampusonlineBundle\Rest\Connection;
 use League\Uri\UriTemplate;
 use Psr\Log\LoggerAwareInterface;
 use Psr\Log\LoggerAwareTrait;

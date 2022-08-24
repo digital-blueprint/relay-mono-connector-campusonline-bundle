@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace Dbp\Relay\MonoConnectorCampusonlineBundle\Rest\TuitionFee;
+namespace Dbp\Relay\MonoConnectorCampusonlineBundle\TuitionFee;
 
 class VersionData
 {

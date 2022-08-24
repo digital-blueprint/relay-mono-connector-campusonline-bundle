@@ -4,16 +4,14 @@ declare(strict_types=1);
 
 namespace Dbp\Relay\MonoConnectorCampusonlineBundle\Service;
 
-use Dbp\Relay\CoreBundle\API\UserSessionInterface;
 use LdapRecord\Connection;
 use LdapRecord\Container;
 use LdapRecord\Models\Entry;
 use LdapRecord\Models\OpenLDAP\User;
 use Psr\Log\LoggerAwareInterface;
 use Psr\Log\LoggerAwareTrait;
-use Symfony\Contracts\Service\ServiceSubscriberInterface;
 
-class LdapService implements LoggerAwareInterface, ServiceSubscriberInterface
+class LdapService implements LoggerAwareInterface
 {
     use LoggerAwareTrait;
 
@@ -81,12 +79,5 @@ class LdapService implements LoggerAwareInterface, ServiceSubscriberInterface
         }
 
         return $data;
-    }
-
-    public static function getSubscribedServices()
-    {
-        return [
-            UserSessionInterface::class,
-        ];
     }
 }

@@ -40,7 +40,7 @@ class TuitionFeeApi implements LoggerAwareInterface
 
     public function getVersion(): VersionData
     {
-        $client = $this->connection->getClient();
+        $client = $this->connection->getClient(false);
 
         $uriTemplate = new UriTemplate('co/tuition-fee-payment-interface/api/version');
         $uri = (string) $uriTemplate->expand();

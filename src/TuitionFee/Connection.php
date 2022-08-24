@@ -40,10 +40,8 @@ class Connection implements LoggerAwareInterface
         $this->token = $token;
     }
 
-    public function getClient(): Client
+    public function getClient(bool $authenticated = true): Client
     {
-        $token = $this->getToken();
-
         $stack = HandlerStack::create($this->clientHandler);
         $base_uri = $this->baseUrl;
         if (substr($base_uri, -1) !== '/') {
@@ -54,10 +52,14 @@ class Connection implements LoggerAwareInterface
             'base_uri' => $base_uri,
             'handler' => $stack,
             'headers' => [
-                'Authorization' => 'Bearer '.$token,
                 'Accept' => 'application/json',
             ],
         ];
+
+        if ($authenticated) {
+            $token = $this->getToken();
+            $client_options['headers']['Authorization'] = 'Bearer '.$token;
+        }
 
         if ($this->logger !== null) {
             $stack->push(Tools::createLoggerMiddleware($this->logger));

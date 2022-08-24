@@ -59,7 +59,7 @@ class TuitionFeeService extends AbstractCampusonlineService implements BackendSe
         ) {
             $userIdentifier = $this->userSession->getUserIdentifier();
             if (!$userIdentifier) {
-                throw ApiError::withDetails(Response::HTTP_UNAUTHORIZED, 'User identifier empty!', 'mono:user-identifier-empty');
+                throw new ApiError(Response::HTTP_UNAUTHORIZED, 'User identifier empty!');
             }
 
             $type = $payment->getType();
@@ -77,7 +77,8 @@ class TuitionFeeService extends AbstractCampusonlineService implements BackendSe
                 $semesterKey = self::convertSemesterToSemesterKey($payment->getData());
                 $tuitionFeeData = $api->getSemesterFee($obfuscatedId, $semesterKey);
             } catch (\Exception $e) {
-                throw ApiError::withDetails(Response::HTTP_INTERNAL_SERVER_ERROR, 'Communication error with backend!', 'mono:backend-communication-error', ['message' => $e->getMessage()]);
+                $this->logger->error('Communication error with backend!', ['exception' => $e]);
+                throw new ApiError(Response::HTTP_INTERNAL_SERVER_ERROR, 'Communication error with backend!');
             }
             $payment->setAmount((string) $tuitionFeeData->getAmount());
             $payment->setCurrency(Payment::PRICE_CURRENCY_EUR);
@@ -113,7 +114,8 @@ class TuitionFeeService extends AbstractCampusonlineService implements BackendSe
                 $amount = (float) $payment->getAmount();
                 $notified = $api->registerPayment($obfuscatedId, $amount);
             } catch (\Exception $e) {
-                throw ApiError::withDetails(Response::HTTP_INTERNAL_SERVER_ERROR, 'Communication error with backend!', 'mono:backend-communication-error', ['message' => $e->getMessage()]);
+                $this->logger->error('Communication error with backend!', ['exception' => $e]);
+                throw new ApiError(Response::HTTP_INTERNAL_SERVER_ERROR, 'Communication error with backend!');
             }
         }
 

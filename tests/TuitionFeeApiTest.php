@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Dbp\Relay\MonoConnectorCampusonlineBundle\Tests;
 
+use Dbp\Relay\MonoConnectorCampusonlineBundle\TuitionFee\ApiException;
 use Dbp\Relay\MonoConnectorCampusonlineBundle\TuitionFee\Connection;
 use Dbp\Relay\MonoConnectorCampusonlineBundle\TuitionFee\TuitionFeeApi;
 use GuzzleHttp\Handler\MockHandler;
@@ -11,7 +12,7 @@ use GuzzleHttp\HandlerStack;
 use GuzzleHttp\Psr7\Response;
 use PHPUnit\Framework\TestCase;
 
-class ApiTest extends TestCase
+class TuitionFeeApiTest extends TestCase
 {
     /**
      * @var Connection
@@ -66,7 +67,7 @@ class ApiTest extends TestCase
         $this->mockResponses([
             new Response(404, ['Content-Type' => 'application/json'], '{"status":404,"title":"Not Found","type":"exception:at.swgt.rest.client.exception.CoPublicApiWebApplicationException"}'),
         ]);
-        $this->expectException(\Exception::class);
+        $this->expectException(ApiException::class);
         $this->api->getCurrentFee('DEADBEEF');
     }
 
@@ -85,7 +86,7 @@ class ApiTest extends TestCase
         $this->mockResponses([
             new Response(400, ['Content-Type' => 'application/json'], '{"status":400,"title":"semesterKey invalid","type":"exception:javax.ws.rs.BadRequestException"}'),
         ]);
-        $this->expectException(\Exception::class);
+        $this->expectException(ApiException::class);
         $this->api->getSemesterFee('DEADBEEF', 'INVALID');
     }
 
@@ -106,7 +107,7 @@ class ApiTest extends TestCase
             new Response(404, ['Content-Type' => 'application/json'], '{"status":404,"title":"Not Found","type":"exception:at.swgt.rest.client.exception.CoPublicApiWebApplicationException"}'),
         ]);
 
-        $this->expectException(\Exception::class);
+        $this->expectException(ApiException::class);
         $this->api->getFees('DOESNTEXIST');
     }
 
@@ -126,7 +127,7 @@ class ApiTest extends TestCase
         $this->mockResponses([
             new Response(404, ['Content-Type' => 'application/json'], '{"status":404,"title":"Not Found","type":"exception:at.swgt.rest.client.exception.CoPublicApiWebApplicationException"}'),
         ]);
-        $this->expectException(\Exception::class);
+        $this->expectException(ApiException::class);
         $this->api->registerPayment('NOTFOUND', 1.25);
     }
 
@@ -135,7 +136,7 @@ class ApiTest extends TestCase
         $this->mockResponses([
             new Response(400, ['Content-Type' => 'application/json'], '{"status":400,"title":"amount too small","type":"exception:javax.ws.rs.BadRequestException"}'),
         ]);
-        $this->expectException(\Exception::class);
+        $this->expectException(ApiException::class);
         $this->api->registerPayment('DEADBEEF', 0);
     }
 }

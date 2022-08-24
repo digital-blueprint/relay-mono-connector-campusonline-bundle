@@ -9,6 +9,7 @@ use GuzzleHttp\Exception\RequestException;
 use GuzzleHttp\HandlerStack;
 use Psr\Log\LoggerAwareInterface;
 use Psr\Log\LoggerAwareTrait;
+use Psr\Log\NullLogger;
 
 class Connection implements LoggerAwareInterface
 {
@@ -26,6 +27,7 @@ class Connection implements LoggerAwareInterface
         $this->baseUrl = $baseUrl;
         $this->clientId = $clientId;
         $this->clientSecret = $clientSecret;
+        $this->logger = new NullLogger();
     }
 
     public function setClientHandler(?object $handler): void

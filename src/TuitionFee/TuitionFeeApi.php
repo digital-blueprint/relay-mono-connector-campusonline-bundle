@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Dbp\Relay\MonoConnectorCampusonlineBundle\TuitionFee;
 
+use GuzzleHttp\Exception\RequestException;
 use League\Uri\UriTemplate;
 use Psr\Log\LoggerAwareInterface;
 use Psr\Log\LoggerAwareTrait;
@@ -21,13 +22,32 @@ class TuitionFeeApi implements LoggerAwareInterface
         $this->logger = new NullLogger();
     }
 
+    private static function createResponseError(RequestException $e): ApiException
+    {
+        $response = $e->getResponse();
+        if ($response === null) {
+            return new ApiException('Unknown error');
+        }
+        $data = (string) $response->getBody();
+        $json = json_decode($data, true, 512, JSON_THROW_ON_ERROR);
+        $status = $json['status'] ?? '???';
+        $title = $json['title'] ?? 'Unknown error';
+        $type = $json['type'] ?? 'unknown type';
+        $message = "[$status] $title ($type)";
+        return new ApiException($message);
+    }
+
     public function getVersion(): VersionData
     {
         $client = $this->connection->getClient();
 
         $uriTemplate = new UriTemplate('co/tuition-fee-payment-interface/api/version');
         $uri = (string) $uriTemplate->expand();
-        $response = $client->get($uri);
+        try {
+            $response = $client->get($uri);
+        } catch (RequestException $e) {
+            throw self::createResponseError($e);
+        }
 
         $data = json_decode((string) $response->getBody(), true, 512, JSON_THROW_ON_ERROR);
         $versionData = new VersionData();
@@ -42,7 +62,12 @@ class TuitionFeeApi implements LoggerAwareInterface
         $client = $this->connection->getClient();
         $uriTemplate = new UriTemplate('co/tuition-fee-payment-interface/api/authenticated-version');
         $uri = (string) $uriTemplate->expand();
-        $response = $client->get($uri);
+
+        try {
+            $response = $client->get($uri);
+        } catch (RequestException $e) {
+            throw self::createResponseError($e);
+        }
 
         $data = json_decode((string) $response->getBody(), true, 512, JSON_THROW_ON_ERROR);
         $versionData = new VersionData();
@@ -59,7 +84,13 @@ class TuitionFeeApi implements LoggerAwareInterface
         $uri = (string) $uriTemplate->expand([
             'obfuscatedId' => $obfuscatedId,
         ]);
-        $response = $client->get($uri);
+
+        try {
+            $response = $client->get($uri);
+        } catch (RequestException $e) {
+            throw self::createResponseError($e);
+        }
+
         $data = json_decode((string) $response->getBody(), true, 512, JSON_THROW_ON_ERROR);
 
         $fee = new TuitionFeeData();
@@ -77,7 +108,13 @@ class TuitionFeeApi implements LoggerAwareInterface
             'obfuscatedId' => $obfuscatedId,
             'semesterKey' => $semesterKey,
         ]);
-        $response = $client->get($uri);
+
+        try {
+            $response = $client->get($uri);
+        } catch (RequestException $e) {
+            throw self::createResponseError($e);
+        }
+
         $data = json_decode((string) $response->getBody(), true, 512, JSON_THROW_ON_ERROR);
         $this->logger->debug('get semester open fee: '.$uri, $data);
 
@@ -98,7 +135,13 @@ class TuitionFeeApi implements LoggerAwareInterface
         $uri = (string) $uriTemplate->expand([
             'obfuscatedId' => $obfuscatedId,
         ]);
-        $response = $client->get($uri);
+
+        try {
+            $response = $client->get($uri);
+        } catch (RequestException $e) {
+            throw self::createResponseError($e);
+        }
+
         $data = json_decode((string) $response->getBody(), true, 512, JSON_THROW_ON_ERROR);
         $this->logger->debug('get open fees: '.$uri, $data);
         $fees = [];
@@ -125,7 +168,13 @@ class TuitionFeeApi implements LoggerAwareInterface
             ],
         ];
         $this->logger->debug('register payment request: '.$uri, $data);
-        $response = $client->post($uri, $data);
+
+        try {
+            $response = $client->post($uri, $data);
+        } catch (RequestException $e) {
+            throw self::createResponseError($e);
+        }
+
         $this->logger->debug('register payment response', [
             'headers' => $response->getHeaders(),
             'body' => (string) $response->getBody(),

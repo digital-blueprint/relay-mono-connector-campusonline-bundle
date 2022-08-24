@@ -74,7 +74,7 @@ class TuitionFeeService extends AbstractCampusonlineService implements BackendSe
 
             $api = $this->getApiByType($payment->getType());
             $obfuscatedId = $payment->getLocalIdentifier();
-            $semesterKey = self::convertSemesterToSemesterKey($payment->getData());
+            $semesterKey = Tools::convertSemesterToSemesterKey($payment->getData());
 
             try {
                 $tuitionFeeData = $api->getSemesterFee($obfuscatedId, $semesterKey);
@@ -89,7 +89,7 @@ class TuitionFeeService extends AbstractCampusonlineService implements BackendSe
         }
 
         // These things never hit the backend and are translated, so try to update them always
-        $semesterKey = self::convertSemesterToSemesterKey($payment->getData());
+        $semesterKey = Tools::convertSemesterToSemesterKey($payment->getData());
         $parameters = [
             'semesterKey' => $semesterKey,
             'givenName' => $payment->getGivenName(),
@@ -147,22 +147,5 @@ class TuitionFeeService extends AbstractCampusonlineService implements BackendSe
         $api->setLogger($this->logger);
 
         return $api;
-    }
-
-    public static function convertSemesterToSemesterKey(string $semester): string
-    {
-        $term = preg_replace('/^[^SW]*([SW])[^SW]*$/', '$1', $semester);
-        $year = preg_replace('/^[^0-9]*([0-9]{2,4})[^0-9]*$/', '$1', $semester);
-        if (strlen($year) === 2) {
-            // first tuition fee in CAMPUSonline is "1950W"
-            if ((int) $year >= 50) {
-                $year = '19'.$year;
-            } else {
-                $year = '20'.$year;
-            }
-        }
-        $semesterKey = $year.$term;
-
-        return $semesterKey;
     }
 }

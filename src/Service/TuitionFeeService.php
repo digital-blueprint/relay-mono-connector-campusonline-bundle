@@ -18,7 +18,7 @@ use Psr\Log\LoggerInterface;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Contracts\Translation\TranslatorInterface;
 
-class TuitionFeeService extends AbstractCampusonlineService implements BackendServiceInterface, LoggerAwareInterface
+class TuitionFeeService extends AbstractPaymentTypesService implements BackendServiceInterface, LoggerAwareInterface
 {
     use LoggerAwareTrait;
 
@@ -64,9 +64,7 @@ class TuitionFeeService extends AbstractCampusonlineService implements BackendSe
             }
 
             $type = $payment->getType();
-            $ldapConfig = $this->getConfigByType($type);
-            $this->ldapService->setConfig($ldapConfig);
-            $ldapData = $this->ldapService->getDataByIdentifier($userIdentifier);
+            $ldapData = $this->ldapService->getDataByIdentifier($type, $userIdentifier);
 
             $payment->setLocalIdentifier($ldapData->obfuscatedId);
             $payment->setGivenName($ldapData->givenName);

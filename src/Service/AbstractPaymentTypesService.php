@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace Dbp\Relay\MonoConnectorCampusonlineBundle\Service;
 
-abstract class AbstractCampusonlineService
+abstract class AbstractPaymentTypesService
 {
     /**
      * @var array

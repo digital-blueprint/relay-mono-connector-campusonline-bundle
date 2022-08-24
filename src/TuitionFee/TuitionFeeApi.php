@@ -41,7 +41,7 @@ class TuitionFeeApi implements LoggerAwareInterface
     /**
      * Returns the API version information (even if not authenticated).
      */
-    public function getVersion(): VersionData
+    public function getVersion(): Version
     {
         $client = $this->connection->getClient(false);
 
@@ -54,7 +54,7 @@ class TuitionFeeApi implements LoggerAwareInterface
         }
 
         $data = json_decode((string) $response->getBody(), true, 512, JSON_THROW_ON_ERROR);
-        $versionData = new VersionData();
+        $versionData = new Version();
         $versionData->name = $data['name'];
         $versionData->version = $data['version'];
 
@@ -64,7 +64,7 @@ class TuitionFeeApi implements LoggerAwareInterface
     /**
      * Returns the API version information.
      */
-    public function getAuthenticatedVersion(): VersionData
+    public function getAuthenticatedVersion(): Version
     {
         $client = $this->connection->getClient();
         $uriTemplate = new UriTemplate('co/tuition-fee-payment-interface/api/version/authenticated-version');
@@ -77,7 +77,7 @@ class TuitionFeeApi implements LoggerAwareInterface
         }
 
         $data = json_decode((string) $response->getBody(), true, 512, JSON_THROW_ON_ERROR);
-        $versionData = new VersionData();
+        $versionData = new Version();
         $versionData->name = $data['name'];
         $versionData->version = $data['version'];
 

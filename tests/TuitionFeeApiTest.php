@@ -41,15 +41,15 @@ class TuitionFeeApiTest extends TestCase
             new Response(200, ['Content-Type' => 'application/json'], '{"name":"tuinx","version":"1.0.0-SNAPSHOT"}'),
         ]);
         $version = $this->api->getVersion();
-        $this->assertSame($version->name, 'tuinx');
-        $this->assertSame($version->version, '1.0.0-SNAPSHOT');
+        $this->assertSame($version->getName(), 'tuinx');
+        $this->assertSame($version->getVersion(), '1.0.0-SNAPSHOT');
 
         $this->mockResponses([
             new Response(200, ['Content-Type' => 'application/json'], '{"name":"tuinx","version":"1.0.0-SNAPSHOT"}'),
         ]);
         $version = $this->api->getAuthenticatedVersion();
-        $this->assertSame($version->name, 'tuinx');
-        $this->assertSame($version->version, '1.0.0-SNAPSHOT');
+        $this->assertSame($version->getName(), 'tuinx');
+        $this->assertSame($version->getVersion(), '1.0.0-SNAPSHOT');
     }
 
     public function testGetCurrentFee()
@@ -100,6 +100,17 @@ class TuitionFeeApiTest extends TestCase
         $this->assertCount(3, $feeList->getItems());
         $this->assertSame(-16.5, $feeList->getTotalAmount());
         $this->assertSame($feeList->getItems()[0]->getSemesterKey(), '1950W');
+    }
+
+    public function testGetFeesEmpty()
+    {
+        $this->mockResponses([
+            new Response(200, ['Content-Type' => 'application/json'], '{"totalAmount":0.0}'),
+        ]);
+
+        $feeList = $this->api->getAllFees('DEADBEEF');
+        $this->assertCount(0, $feeList->getItems());
+        $this->assertSame(0.0, $feeList->getTotalAmount());
     }
 
     public function testGetFeesNotFound()

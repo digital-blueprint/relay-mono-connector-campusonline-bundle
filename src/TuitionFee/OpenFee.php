@@ -7,29 +7,6 @@ namespace Dbp\Relay\MonoConnectorCampusonlineBundle\TuitionFee;
 class OpenFee
 {
     /**
-     * @var float
-     */
-    protected $amount;
-
-    /**
-     * Amount in Euro.
-     *
-     * @param float $amount
-     */
-    public function setAmount(?float $amount): void
-    {
-        $this->amount = $amount;
-    }
-
-    /**
-     * @return float
-     */
-    public function getAmount(): ?float
-    {
-        return $this->amount;
-    }
-
-    /**
      * Semester Key e.g. "2021W".
      *
      * @var string
@@ -37,17 +14,24 @@ class OpenFee
     protected $semesterKey;
 
     /**
-     * @param string $semesterKey
+     * Amount in Euro.
+     *
+     * @var float
      */
-    public function setSemesterKey(?string $semesterKey): void
+    protected $amount;
+
+    public function __construct(string $semesterKey, float $amount)
     {
         $this->semesterKey = $semesterKey;
+        $this->amount = $amount;
     }
 
-    /**
-     * @return string
-     */
-    public function getSemesterKey(): ?string
+    public function getAmount(): float
+    {
+        return $this->amount;
+    }
+
+    public function getSemesterKey(): string
     {
         return $this->semesterKey;
     }

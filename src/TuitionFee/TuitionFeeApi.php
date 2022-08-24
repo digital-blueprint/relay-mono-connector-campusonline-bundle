@@ -54,9 +54,7 @@ class TuitionFeeApi implements LoggerAwareInterface
         }
 
         $data = json_decode((string) $response->getBody(), true, 512, JSON_THROW_ON_ERROR);
-        $versionData = new Version();
-        $versionData->name = $data['name'];
-        $versionData->version = $data['version'];
+        $versionData = new Version($data['name'], $data['version']);
 
         return $versionData;
     }
@@ -77,9 +75,7 @@ class TuitionFeeApi implements LoggerAwareInterface
         }
 
         $data = json_decode((string) $response->getBody(), true, 512, JSON_THROW_ON_ERROR);
-        $versionData = new Version();
-        $versionData->name = $data['name'];
-        $versionData->version = $data['version'];
+        $versionData = new Version($data['name'], $data['version']);
 
         return $versionData;
     }
@@ -105,9 +101,7 @@ class TuitionFeeApi implements LoggerAwareInterface
 
         $data = json_decode((string) $response->getBody(), true, 512, JSON_THROW_ON_ERROR);
 
-        $fee = new OpenFee();
-        $fee->setAmount($data['amount']);
-        $fee->setSemesterKey($data['semesterKey']);
+        $fee = new OpenFee($data['semesterKey'], $data['amount']);
 
         return $fee;
     }
@@ -136,9 +130,7 @@ class TuitionFeeApi implements LoggerAwareInterface
         $data = json_decode((string) $response->getBody(), true, 512, JSON_THROW_ON_ERROR);
         $this->logger->debug('get semester open fee: '.$uri, $data);
 
-        $fee = new OpenFee();
-        $fee->setAmount($data['amount']);
-        $fee->setSemesterKey($data['semesterKey']);
+        $fee = new OpenFee($data['semesterKey'], $data['amount']);
 
         return $fee;
     }
@@ -164,16 +156,13 @@ class TuitionFeeApi implements LoggerAwareInterface
 
         $data = json_decode((string) $response->getBody(), true, 512, JSON_THROW_ON_ERROR);
         $this->logger->debug('get open fees: '.$uri, $data);
-        $feeList = new OpenFeeList();
+
         $items = [];
-        foreach ($data['items'] as $item) {
-            $fee = new OpenFee();
-            $fee->setAmount($item['amount']);
-            $fee->setSemesterKey($item['semesterKey']);
+        foreach (($data['items'] ?? []) as $item) {
+            $fee = new OpenFee($item['semesterKey'], $item['amount']);
             $items[] = $fee;
         }
-        $feeList->setItems($items);
-        $feeList->setTotalAmount($data['totalAmount']);
+        $feeList = new OpenFeeList($items, $data['totalAmount']);
 
         return $feeList;
     }

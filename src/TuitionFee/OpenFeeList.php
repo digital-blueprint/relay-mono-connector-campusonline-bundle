@@ -19,6 +19,15 @@ class OpenFeeList
     protected $totalAmount;
 
     /**
+     * @param OpenFee[] $items
+     */
+    public function __construct(array $items, float $totalAmount)
+    {
+        $this->items = $items;
+        $this->totalAmount = $totalAmount;
+    }
+
+    /**
      * @return OpenFee[]
      */
     public function getItems(): array
@@ -26,21 +35,8 @@ class OpenFeeList
         return $this->items;
     }
 
-    /**
-     * @param OpenFee[] $items
-     */
-    public function setItems(array $items): void
-    {
-        $this->items = $items;
-    }
-
     public function getTotalAmount(): float
     {
         return $this->totalAmount;
-    }
-
-    public function setTotalAmount(float $totalAmount): void
-    {
-        $this->totalAmount = $totalAmount;
     }
 }

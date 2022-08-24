@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace Dbp\Relay\MonoConnectorCampusonlineBundle\Tests;
 
-use Dbp\Relay\MonoConnectorCampusonlineBundle\Rest\Connection;
+use Dbp\Relay\MonoConnectorCampusonlineBundle\TuitionFee\Connection;
 use GuzzleHttp\Handler\MockHandler;
 use GuzzleHttp\HandlerStack;
 use GuzzleHttp\Psr7\Response;

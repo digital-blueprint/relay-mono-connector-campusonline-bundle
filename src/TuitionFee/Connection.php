@@ -4,8 +4,6 @@ declare(strict_types=1);
 
 namespace Dbp\Relay\MonoConnectorCampusonlineBundle\TuitionFee;
 
-use Dbp\CampusonlineApi\Rest\ApiException;
-use Dbp\CampusonlineApi\Rest\Tools;
 use GuzzleHttp\Client;
 use GuzzleHttp\Exception\RequestException;
 use GuzzleHttp\HandlerStack;
@@ -106,7 +104,7 @@ class Connection implements LoggerAwareInterface
         }
         $data = $response->getBody()->getContents();
 
-        $token = Tools::decodeJSON($data, true);
+        $token = json_decode($data, true, 512, JSON_THROW_ON_ERROR);
         $this->token = $token['access_token'];
     }
 }

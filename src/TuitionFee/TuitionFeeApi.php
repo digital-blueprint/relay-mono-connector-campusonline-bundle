@@ -89,7 +89,7 @@ class TuitionFeeApi implements LoggerAwareInterface
      *
      * @param string $obfuscatedId nr_obfuscated
      */
-    public function getCurrentFee(string $obfuscatedId): TuitionFeeData
+    public function getCurrentFee(string $obfuscatedId): OpenFee
     {
         $client = $this->connection->getClient();
         $uriTemplate = new UriTemplate('co/tuition-fee-payment-interface/api/open-fees/{obfuscatedId}/current');
@@ -105,7 +105,7 @@ class TuitionFeeApi implements LoggerAwareInterface
 
         $data = json_decode((string) $response->getBody(), true, 512, JSON_THROW_ON_ERROR);
 
-        $fee = new TuitionFeeData();
+        $fee = new OpenFee();
         $fee->setAmount($data['amount']);
         $fee->setSemesterKey($data['semesterKey']);
 
@@ -118,7 +118,7 @@ class TuitionFeeApi implements LoggerAwareInterface
      * @param string $obfuscatedId nr_obfuscated
      * @param string $semesterKey  semester key e.g. "2021W"
      */
-    public function getSemesterFee(string $obfuscatedId, string $semesterKey): TuitionFeeData
+    public function getSemesterFee(string $obfuscatedId, string $semesterKey): OpenFee
     {
         $client = $this->connection->getClient();
         $uriTemplate = new UriTemplate('co/tuition-fee-payment-interface/api/open-fees/{obfuscatedId}/semester/{semesterKey}');
@@ -136,7 +136,7 @@ class TuitionFeeApi implements LoggerAwareInterface
         $data = json_decode((string) $response->getBody(), true, 512, JSON_THROW_ON_ERROR);
         $this->logger->debug('get semester open fee: '.$uri, $data);
 
-        $fee = new TuitionFeeData();
+        $fee = new OpenFee();
         $fee->setAmount($data['amount']);
         $fee->setSemesterKey($data['semesterKey']);
 
@@ -147,10 +147,8 @@ class TuitionFeeApi implements LoggerAwareInterface
      * Returns a list of outstanding fees for person for all semesters.
      *
      * @param string $obfuscatedId nr_obfuscated
-     *
-     * @return TuitionFeeData[]
      */
-    public function getFees(string $obfuscatedId): array
+    public function getFees(string $obfuscatedId): OpenFeeList
     {
         $client = $this->connection->getClient();
         $uriTemplate = new UriTemplate('co/tuition-fee-payment-interface/api/open-fees/{obfuscatedId}');
@@ -166,15 +164,18 @@ class TuitionFeeApi implements LoggerAwareInterface
 
         $data = json_decode((string) $response->getBody(), true, 512, JSON_THROW_ON_ERROR);
         $this->logger->debug('get open fees: '.$uri, $data);
-        $fees = [];
+        $feeList = new OpenFeeList();
+        $items = [];
         foreach ($data['items'] as $item) {
-            $fee = new TuitionFeeData();
+            $fee = new OpenFee();
             $fee->setAmount($item['amount']);
             $fee->setSemesterKey($item['semesterKey']);
-            $fees[] = $fee;
+            $items[] = $fee;
         }
+        $feeList->setItems($items);
+        $feeList->setTotalAmount($data['totalAmount']);
 
-        return $fees;
+        return $feeList;
     }
 
     /**

@@ -96,9 +96,10 @@ class TuitionFeeApiTest extends TestCase
             new Response(200, ['Content-Type' => 'application/json'], '{"items":[{"amount":-16,"semesterKey":"1950W"},{"amount":-0.5,"semesterKey":"1951S"},{"amount":0,"semesterKey":"1951W"}],"totalAmount":-16.5}'),
         ]);
 
-        $fees = $this->api->getFees('DEADBEEF');
-        $this->assertCount(3, $fees);
-        $this->assertSame($fees[0]->getSemesterKey(), '1950W');
+        $feeList = $this->api->getFees('DEADBEEF');
+        $this->assertCount(3, $feeList->getItems());
+        $this->assertSame(-16.5, $feeList->getTotalAmount());
+        $this->assertSame($feeList->getItems()[0]->getSemesterKey(), '1950W');
     }
 
     public function testGetFeesNotFound()

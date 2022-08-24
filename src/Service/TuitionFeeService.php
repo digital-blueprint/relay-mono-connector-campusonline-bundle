@@ -59,8 +59,8 @@ class TuitionFeeService extends AbstractCampusonlineService implements BackendSe
             || $payment->getDataUpdatedAt() <= $updateExpiration
         ) {
             $userIdentifier = $this->userSession->getUserIdentifier();
-            if (!$userIdentifier) {
-                throw new ApiError(Response::HTTP_UNAUTHORIZED, 'User identifier empty!');
+            if ($userIdentifier === null) {
+                throw new ApiError(Response::HTTP_UNAUTHORIZED, 'No user identifier!');
             }
 
             $type = $payment->getType();

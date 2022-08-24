@@ -38,6 +38,9 @@ class TuitionFeeApi implements LoggerAwareInterface
         return new ApiException($message);
     }
 
+    /**
+     * Returns the API version information (even if not authenticated).
+     */
     public function getVersion(): VersionData
     {
         $client = $this->connection->getClient(false);
@@ -81,6 +84,11 @@ class TuitionFeeApi implements LoggerAwareInterface
         return $versionData;
     }
 
+    /**
+     * Returns outstanding fees for person and current semester.
+     *
+     * @param string $obfuscatedId nr_obfuscated
+     */
     public function getCurrentFee(string $obfuscatedId): TuitionFeeData
     {
         $client = $this->connection->getClient();
@@ -104,6 +112,12 @@ class TuitionFeeApi implements LoggerAwareInterface
         return $fee;
     }
 
+    /**
+     * Returns the outstanding fee for person and given semester.
+     *
+     * @param string $obfuscatedId nr_obfuscated
+     * @param string $semesterKey  semester key e.g. "2021W"
+     */
     public function getSemesterFee(string $obfuscatedId, string $semesterKey): TuitionFeeData
     {
         $client = $this->connection->getClient();
@@ -130,6 +144,10 @@ class TuitionFeeApi implements LoggerAwareInterface
     }
 
     /**
+     * Returns a list of outstanding fees for person for all semesters.
+     *
+     * @param string $obfuscatedId nr_obfuscated
+     *
      * @return TuitionFeeData[]
      */
     public function getFees(string $obfuscatedId): array
@@ -159,6 +177,12 @@ class TuitionFeeApi implements LoggerAwareInterface
         return $fees;
     }
 
+    /**
+     * Enter new payment for the current semester.
+     *
+     * @param string $obfuscatedId nr_obfuscated
+     * @param float  $amount       Amount in Euro
+     */
     public function registerPayment(string $obfuscatedId, float $amount)
     {
         $client = $this->connection->getClient();

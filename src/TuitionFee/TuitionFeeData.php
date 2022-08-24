@@ -12,6 +12,8 @@ class TuitionFeeData
     protected $amount;
 
     /**
+     * Amount in Euro.
+     *
      * @param float $amount
      */
     public function setAmount(?float $amount): void
@@ -28,6 +30,8 @@ class TuitionFeeData
     }
 
     /**
+     * Semester Key e.g. "2021W".
+     *
      * @var string
      */
     protected $semesterKey;

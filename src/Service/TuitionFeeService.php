@@ -9,6 +9,7 @@ use Dbp\Relay\CoreBundle\Exception\ApiError;
 use Dbp\Relay\MonoBundle\Entity\Payment;
 use Dbp\Relay\MonoBundle\Entity\PaymentPersistence;
 use Dbp\Relay\MonoBundle\Service\BackendServiceInterface;
+use Dbp\Relay\MonoConnectorCampusonlineBundle\TuitionFee\ApiException;
 use Dbp\Relay\MonoConnectorCampusonlineBundle\TuitionFee\Connection;
 use Dbp\Relay\MonoConnectorCampusonlineBundle\TuitionFee\TuitionFeeApi;
 use Psr\Log\LoggerAwareInterface;
@@ -71,12 +72,13 @@ class TuitionFeeService extends AbstractCampusonlineService implements BackendSe
             $payment->setGivenName($ldapData->givenName);
             $payment->setFamilyName($ldapData->familyName);
 
+            $api = $this->getApiByType($payment->getType());
+            $obfuscatedId = $payment->getLocalIdentifier();
+            $semesterKey = self::convertSemesterToSemesterKey($payment->getData());
+
             try {
-                $api = $this->getApiByType($payment->getType());
-                $obfuscatedId = $payment->getLocalIdentifier();
-                $semesterKey = self::convertSemesterToSemesterKey($payment->getData());
                 $tuitionFeeData = $api->getSemesterFee($obfuscatedId, $semesterKey);
-            } catch (\Exception $e) {
+            } catch (ApiException $e) {
                 $this->logger->error('Communication error with backend!', ['exception' => $e]);
                 throw new ApiError(Response::HTTP_INTERNAL_SERVER_ERROR, 'Communication error with backend!');
             }
@@ -113,7 +115,7 @@ class TuitionFeeService extends AbstractCampusonlineService implements BackendSe
             $amount = (float) $payment->getAmount();
             try {
                 $api->registerPayment($obfuscatedId, $amount);
-            } catch (\Exception $e) {
+            } catch (ApiException $e) {
                 $this->logger->error('Communication error with backend!', ['exception' => $e]);
                 throw new ApiError(Response::HTTP_INTERNAL_SERVER_ERROR, 'Communication error with backend!');
             }

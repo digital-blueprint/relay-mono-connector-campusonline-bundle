@@ -49,6 +49,22 @@ class TuitionFeeService extends AbstractPaymentTypesService implements BackendSe
         $this->userSession = $userSession;
     }
 
+    public function checkConnectionNoAuth()
+    {
+        foreach ($this->getTypes() as $type) {
+            $api = $this->getApiByType($type);
+            $api->getVersion();
+        }
+    }
+
+    public function checkConnection()
+    {
+        foreach ($this->getTypes() as $type) {
+            $api = $this->getApiByType($type);
+            $api->getAuthenticatedVersion();
+        }
+    }
+
     public function updateData(PaymentPersistence &$payment): bool
     {
         $changed = false;

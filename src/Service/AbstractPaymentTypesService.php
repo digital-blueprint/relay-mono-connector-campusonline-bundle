@@ -19,6 +19,14 @@ abstract class AbstractPaymentTypesService
         $this->config = $config;
     }
 
+    /**
+     * @return string[]
+     */
+    protected function getTypes(): array
+    {
+        return array_keys($this->config['payment_types']);
+    }
+
     protected function getConfigByType(string $type): array
     {
         if (array_key_exists($type, $this->config['payment_types'])) {

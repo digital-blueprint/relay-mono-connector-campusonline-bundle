@@ -40,6 +40,15 @@ class LdapService extends AbstractPaymentTypesService implements LoggerAwareInte
         return $providerConfig;
     }
 
+    public function checkConnection(): void
+    {
+        foreach ($this->getTypes() as $type) {
+            $typeConfig = $this->getConfigByType($type);
+            $connection = new Connection($this->getLdapConfig($typeConfig));
+            $connection->connect();
+        }
+    }
+
     public function getDataByIdentifier(string $type, string $identifier): LdapData
     {
         $typeConfig = $this->getConfigByType($type);

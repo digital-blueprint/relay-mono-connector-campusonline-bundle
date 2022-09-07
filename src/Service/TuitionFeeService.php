@@ -127,8 +127,9 @@ class TuitionFeeService extends AbstractPaymentTypesService implements BackendSe
             $api = $this->getApiByType($type);
             $obfuscatedId = $payment->getLocalIdentifier();
             $amount = (float) $payment->getAmount();
+            $semesterKey = Tools::convertSemesterToSemesterKey($payment->getData());
             try {
-                $api->registerPaymentForCurrentSemester($obfuscatedId, $amount);
+                $api->registerPaymentForSemester($obfuscatedId, $amount, $semesterKey);
             } catch (ApiException $e) {
                 $this->logger->error('Communication error with backend!', ['exception' => $e]);
                 throw new ApiError(Response::HTTP_INTERNAL_SERVER_ERROR, 'Communication error with backend!');

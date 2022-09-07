@@ -123,7 +123,36 @@ class TuitionFeeApiTest extends TestCase
         $this->api->getAllFees('DOESNTEXIST');
     }
 
-    public function testRegisterPayment()
+    public function testRegisterPaymentForSemester()
+    {
+        $mockHandler = new MockHandler([
+            new Response(201, ['Content-Type' => 'application/json'], ''),
+        ]);
+        $this->conn->setClientHandler(HandlerStack::create($mockHandler));
+
+        $this->api->registerPaymentForSemester('DEADBEEF', 1.25, '2022W');
+        $this->assertSame((string) $mockHandler->getLastRequest()->getBody(), '{"personUid":"DEADBEEF","amount":1.25,"semesterKey":"2022W"}');
+    }
+
+    public function testRegisterPaymentForSemesterPersonNotFound()
+    {
+        $this->mockResponses([
+            new Response(404, ['Content-Type' => 'application/json'], '{"status":404,"title":"Not Found","type":"exception:at.swgt.rest.client.exception.CoPublicApiWebApplicationException"}'),
+        ]);
+        $this->expectException(ApiException::class);
+        $this->api->registerPaymentForSemester('NOTFOUND', 1.25, '2022W');
+    }
+
+    public function testRegisterPaymentForSemesterInvalidAmount()
+    {
+        $this->mockResponses([
+            new Response(400, ['Content-Type' => 'application/json'], '{"status":400,"title":"amount too small","type":"exception:javax.ws.rs.BadRequestException"}'),
+        ]);
+        $this->expectException(ApiException::class);
+        $this->api->registerPaymentForSemester('DEADBEEF', 0, '2022W');
+    }
+
+    public function testRegisterPaymentForCurrentSemester()
     {
         $mockHandler = new MockHandler([
             new Response(201, ['Content-Type' => 'application/json'], ''),
@@ -134,7 +163,7 @@ class TuitionFeeApiTest extends TestCase
         $this->assertSame((string) $mockHandler->getLastRequest()->getBody(), '{"personUid":"DEADBEEF","amount":1.25}');
     }
 
-    public function testRegisterPaymentPersonNotFound()
+    public function testRegisterPaymentForCurrentSemesterPersonNotFound()
     {
         $this->mockResponses([
             new Response(404, ['Content-Type' => 'application/json'], '{"status":404,"title":"Not Found","type":"exception:at.swgt.rest.client.exception.CoPublicApiWebApplicationException"}'),
@@ -143,7 +172,7 @@ class TuitionFeeApiTest extends TestCase
         $this->api->registerPaymentForCurrentSemester('NOTFOUND', 1.25);
     }
 
-    public function testRegisterPaymentInvalidAmount()
+    public function testRegisterPaymentForCurrentSemesterInvalidAmount()
     {
         $this->mockResponses([
             new Response(400, ['Content-Type' => 'application/json'], '{"status":400,"title":"amount too small","type":"exception:javax.ws.rs.BadRequestException"}'),

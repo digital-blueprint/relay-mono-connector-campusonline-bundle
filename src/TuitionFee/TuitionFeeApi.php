@@ -168,6 +168,45 @@ class TuitionFeeApi implements LoggerAwareInterface
     }
 
     /**
+     * Enter new payment for given semester.
+     *
+     * @param string $obfuscatedId nr_obfuscated
+     * @param float  $amount       Amount in Euro
+     */
+    public function registerPaymentForSemester(string $obfuscatedId, float $amount, string $semesterKey)
+    {
+        $client = $this->connection->getClient();
+        $uriTemplate = new UriTemplate('co/tuition-fee-payment-interface/api/payment-registrations');
+        $uri = (string) $uriTemplate->expand();
+
+        $data = [
+            'json' => [
+                'personUid' => $obfuscatedId,
+                'amount' => $amount,
+                'semesterKey' => $semesterKey,
+            ],
+        ];
+        $this->logger->debug('register payment request: '.$uri, $data);
+
+        try {
+            $response = $client->post($uri, $data);
+        } catch (RequestException $e) {
+            throw self::createResponseError($e);
+        }
+
+        $this->logger->debug('register payment response', [
+            'status' => $response->getStatusCode(),
+            'headers' => $response->getHeaders(),
+            'body' => (string) $response->getBody(),
+        ]);
+
+        // The API docs say that it returns 201 when the payment is complete, so check just to be sure
+        if ($response->getStatusCode() !== 201) {
+            throw new ApiException('Wrong status code: '.$response->getStatusCode());
+        }
+    }
+
+    /**
      * Enter new payment for the current semester.
      *
      * @param string $obfuscatedId nr_obfuscated

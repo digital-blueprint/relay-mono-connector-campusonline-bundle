@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "1a0e093fbb582b7b1c1d8762ecdc01e8",
+    "content-hash": "f88f5c58fff22fb03308d3cc6f7a933a",
     "packages": [
         {
             "name": "api-platform/core",
@@ -239,43 +239,6 @@
                 }
             ],
             "time": "2022-01-17T14:14:24+00:00"
-        },
-        {
-            "name": "dbp/campusonline-api",
-            "version": "v0.2.23",
-            "source": {
-                "type": "git",
-                "url": "https://gitlab.tugraz.at/dbp/campus-online/dbp-campusonline-api",
-                "reference": "97514edc58934263dd122a4ccc7d3bde98125512"
-            },
-            "require": {
-                "ext-json": "*",
-                "ext-simplexml": "*",
-                "guzzlehttp/guzzle": "^7.3",
-                "kevinrob/guzzle-cache-middleware": "^3.5 || ^4.0",
-                "league/uri": "^6.5",
-                "php": ">=7.3",
-                "symfony/polyfill-php80": "^1.23"
-            },
-            "require-dev": {
-                "friendsofphp/php-cs-fixer": "^3.4",
-                "phpstan/phpstan": "^1.9.2",
-                "phpstan/phpstan-phpunit": "^1.2.2",
-                "phpunit/phpunit": "^9.5.26",
-                "symfony/phpunit-bridge": "^5.4.14",
-                "vimeo/psalm": "^4.30"
-            },
-            "type": "library",
-            "autoload": {
-                "psr-4": {
-                    "Dbp\\CampusonlineApi\\": "src/"
-                }
-            },
-            "notification-url": "https://packagist.org/downloads/",
-            "license": [
-                "AGPL-3.0-or-later"
-            ],
-            "time": "2022-11-30T12:15:00+00:00"
         },
         {
             "name": "dbp/relay-core-bundle",
@@ -12429,5 +12392,5 @@
     "platform-overrides": {
         "php": "7.3"
     },
-    "plugin-api-version": "2.3.0"
+    "plugin-api-version": "2.2.0"
 }

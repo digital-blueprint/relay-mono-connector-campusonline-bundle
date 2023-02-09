@@ -96,7 +96,13 @@ class TuitionFeeService extends AbstractPaymentTypesService implements BackendSe
                 $this->logger->error('Communication error with backend!', ['exception' => $e]);
                 throw new ApiError(Response::HTTP_INTERNAL_SERVER_ERROR, 'Communication error with backend!');
             }
-            $payment->setAmount((string) $tuitionFeeData->getAmount());
+            $amount = $tuitionFeeData->getAmount();
+            // The /payment-registrations CO API returns an error for everything smaller then 1.0. To avoid starting
+            // a payment that we can never report back fail early here.
+            if ($amount < 1.0) {
+                throw ApiError::withDetails(Response::HTTP_BAD_REQUEST, 'Amount must be greater than or equal to 1', 'mono:start-payment-amount-too-low');
+            }
+            $payment->setAmount((string) $amount);
             $payment->setCurrency(Payment::PRICE_CURRENCY_EUR);
 
             $changed = true;

@@ -368,16 +368,16 @@
         },
         {
             "name": "directorytree/ldaprecord",
-            "version": "v2.19.4",
+            "version": "v2.20.0",
             "source": {
                 "type": "git",
                 "url": "https://github.com/DirectoryTree/LdapRecord.git",
-                "reference": "b8fbf3a4cf93be1ba44063a3db0237b7e8444a39"
+                "reference": "221e5d78372c434313feae1ce2d209aec9e62a94"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/DirectoryTree/LdapRecord/zipball/b8fbf3a4cf93be1ba44063a3db0237b7e8444a39",
-                "reference": "b8fbf3a4cf93be1ba44063a3db0237b7e8444a39",
+                "url": "https://api.github.com/repos/DirectoryTree/LdapRecord/zipball/221e5d78372c434313feae1ce2d209aec9e62a94",
+                "reference": "221e5d78372c434313feae1ce2d209aec9e62a94",
                 "shasum": ""
             },
             "require": {
@@ -438,7 +438,7 @@
                     "type": "github"
                 }
             ],
-            "time": "2023-02-08T21:19:22+00:00"
+            "time": "2023-02-14T13:58:51+00:00"
         },
         {
             "name": "doctrine/annotations",

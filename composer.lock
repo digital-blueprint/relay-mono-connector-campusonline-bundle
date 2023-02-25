@@ -242,11 +242,11 @@
         },
         {
             "name": "dbp/relay-core-bundle",
-            "version": "v0.1.76",
+            "version": "v0.1.82",
             "source": {
                 "type": "git",
                 "url": "https://gitlab.tugraz.at/dbp/relay/dbp-relay-core-bundle",
-                "reference": "6b86617395c0d39c20d5f6327787b8713b4dc406"
+                "reference": "26b368389e5996a52a4afe7f718365e33bd16f91"
             },
             "require": {
                 "api-platform/core": "^2.6.8 <2.7.0",
@@ -268,6 +268,7 @@
                 "symfony/lock": "^5.4",
                 "symfony/messenger": "^5.4",
                 "symfony/mime": "^5.4",
+                "symfony/monolog-bundle": "^3.8",
                 "symfony/process": "^5.4",
                 "symfony/security-bundle": "^5.4",
                 "symfony/security-core": "^5.4",
@@ -310,25 +311,25 @@
                 "AGPL-3.0-or-later"
             ],
             "description": "The core bundle of the Relay API gateway",
-            "time": "2023-02-14T14:23:10+00:00"
+            "time": "2023-02-23T14:57:20+00:00"
         },
         {
             "name": "dbp/relay-mono-bundle",
-            "version": "v0.1.6",
+            "version": "v0.1.7",
             "source": {
                 "type": "git",
                 "url": "https://github.com/digital-blueprint/relay-mono-bundle.git",
-                "reference": "c2070e50033932da60d65e1421eb071e582169c6"
+                "reference": "2561281ebc54a70f47ea74b62b17b82f7e8a4213"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/digital-blueprint/relay-mono-bundle/zipball/c2070e50033932da60d65e1421eb071e582169c6",
-                "reference": "c2070e50033932da60d65e1421eb071e582169c6",
+                "url": "https://api.github.com/repos/digital-blueprint/relay-mono-bundle/zipball/2561281ebc54a70f47ea74b62b17b82f7e8a4213",
+                "reference": "2561281ebc54a70f47ea74b62b17b82f7e8a4213",
                 "shasum": ""
             },
             "require": {
                 "api-platform/core": "^2.6.8",
-                "dbp/relay-core-bundle": "^0.1.43",
+                "dbp/relay-core-bundle": "^0.1.82",
                 "ext-json": "*",
                 "php": ">=7.3",
                 "symfony/framework-bundle": "^5.4",
@@ -362,22 +363,22 @@
             "description": "A payment bundle for the Relay API gateway",
             "support": {
                 "issues": "https://github.com/digital-blueprint/relay-mono-bundle/issues",
-                "source": "https://github.com/digital-blueprint/relay-mono-bundle/tree/v0.1.6"
+                "source": "https://github.com/digital-blueprint/relay-mono-bundle/tree/v0.1.7"
             },
-            "time": "2023-02-15T15:14:26+00:00"
+            "time": "2023-02-23T15:12:08+00:00"
         },
         {
             "name": "directorytree/ldaprecord",
-            "version": "v2.20.0",
+            "version": "v2.20.1",
             "source": {
                 "type": "git",
                 "url": "https://github.com/DirectoryTree/LdapRecord.git",
-                "reference": "221e5d78372c434313feae1ce2d209aec9e62a94"
+                "reference": "a841f3d9c7c1de8064188a7e566515680d42f048"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/DirectoryTree/LdapRecord/zipball/221e5d78372c434313feae1ce2d209aec9e62a94",
-                "reference": "221e5d78372c434313feae1ce2d209aec9e62a94",
+                "url": "https://api.github.com/repos/DirectoryTree/LdapRecord/zipball/a841f3d9c7c1de8064188a7e566515680d42f048",
+                "reference": "a841f3d9c7c1de8064188a7e566515680d42f048",
                 "shasum": ""
             },
             "require": {
@@ -438,7 +439,7 @@
                     "type": "github"
                 }
             ],
-            "time": "2023-02-14T13:58:51+00:00"
+            "time": "2023-02-20T17:47:23+00:00"
         },
         {
             "name": "doctrine/annotations",

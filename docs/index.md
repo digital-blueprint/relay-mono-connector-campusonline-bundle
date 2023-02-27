@@ -4,7 +4,7 @@ title: Overview
 
 # Mono CAMPUSonline Connector
 
-Source: https://gitlab.tugraz.at/dbp/mono/dbp-relay-mono-connector-campusonline-bundle
+Source: https://github.com/digital-blueprint/relay-mono-connector-campusonline-bundle
 
 ```mermaid
 flowchart LR

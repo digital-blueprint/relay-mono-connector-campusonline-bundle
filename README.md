@@ -1,6 +1,6 @@
 # DbpRelayMonoConnectorCampusonlineBundle
 
-[GitLab](https://gitlab.tugraz.at/dbp/relay/dbp-relay-mono-connector-campusonline-bundle) |
+[GitHub](https://github.com/digital-blueprint/relay-mono-connector-campusonline-bundle) |
 [Packagist](https://packagist.org/packages/dbp/relay-mono-connector-campusonline-bundle)
 
 ## Bundle installation

@@ -15,6 +15,7 @@ use Dbp\Relay\MonoConnectorCampusonlineBundle\TuitionFee\TuitionFeeApi;
 use Psr\Log\LoggerAwareInterface;
 use Psr\Log\LoggerAwareTrait;
 use Psr\Log\LoggerInterface;
+use Psr\Log\NullLogger;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Contracts\Translation\TranslatorInterface;
 
@@ -37,22 +38,32 @@ class TuitionFeeService extends AbstractPaymentTypesService implements BackendSe
      */
     private $translator;
 
+    /**
+     * @var LoggerInterface
+     */
+    private $auditLogger;
+
     public function __construct(
-        LoggerInterface $logger,
         TranslatorInterface $translator,
         LdapService $ldapService,
         UserSessionInterface $userSession
     ) {
-        $this->logger = $logger;
         $this->translator = $translator;
         $this->ldapService = $ldapService;
         $this->userSession = $userSession;
+        $this->logger = new NullLogger();
+        $this->auditLogger = new NullLogger();
+    }
+
+    public function setAuditLogger(LoggerInterface $auditLogger): void
+    {
+        $this->auditLogger = $auditLogger;
     }
 
     public function checkConnectionNoAuth()
     {
         foreach ($this->getTypes() as $type) {
-            $api = $this->getApiByType($type);
+            $api = $this->getApiByType($type, null);
             $api->getVersion();
         }
     }
@@ -60,7 +71,7 @@ class TuitionFeeService extends AbstractPaymentTypesService implements BackendSe
     public function checkConnection()
     {
         foreach ($this->getTypes() as $type) {
-            $api = $this->getApiByType($type);
+            $api = $this->getApiByType($type, null);
             $api->getAuthenticatedVersion();
         }
     }
@@ -74,6 +85,7 @@ class TuitionFeeService extends AbstractPaymentTypesService implements BackendSe
             !$payment->getDataUpdatedAt()
             || $payment->getDataUpdatedAt() <= $updateExpiration
         ) {
+            $this->auditLogger->debug('CO: Updating the payment data', $this->getLoggingContext($payment));
             $userIdentifier = $this->userSession->getUserIdentifier();
             if ($userIdentifier === null) {
                 throw new ApiError(Response::HTTP_UNAUTHORIZED, 'No user identifier!');
@@ -86,7 +98,7 @@ class TuitionFeeService extends AbstractPaymentTypesService implements BackendSe
             $payment->setGivenName($ldapData->givenName);
             $payment->setFamilyName($ldapData->familyName);
 
-            $api = $this->getApiByType($payment->getType());
+            $api = $this->getApiByType($payment->getType(), $payment);
             $obfuscatedId = $payment->getLocalIdentifier();
             $semesterKey = Tools::convertSemesterToSemesterKey($payment->getData());
 
@@ -100,6 +112,7 @@ class TuitionFeeService extends AbstractPaymentTypesService implements BackendSe
             // The /payment-registrations CO API returns an error for everything smaller then 1.0. To avoid starting
             // a payment that we can never report back fail early here.
             if ($amount < 1.0) {
+                $this->auditLogger->error('CO: amount too small, aborting', $this->getLoggingContext($payment));
                 throw ApiError::withDetails(Response::HTTP_BAD_REQUEST, 'Amount must be greater than or equal to 1', 'mono:start-payment-amount-too-low');
             }
             $payment->setAmount((string) $amount);
@@ -121,6 +134,8 @@ class TuitionFeeService extends AbstractPaymentTypesService implements BackendSe
             $payment->setAlternateName($alternateName);
         }
 
+        $this->auditLogger->debug('CO: Updating the payment data is done, changed: '.$changed, $this->getLoggingContext($payment));
+
         return $changed;
     }
 
@@ -130,8 +145,9 @@ class TuitionFeeService extends AbstractPaymentTypesService implements BackendSe
 
         if (!$payment->getNotifiedAt()) {
             if ($payment->getPaymentStatus() === Payment::PAYMENT_STATUS_COMPLETED) {
+                $this->auditLogger->debug('CO: Registering semester payment', $this->getLoggingContext($payment));
                 $type = $payment->getType();
-                $api = $this->getApiByType($type);
+                $api = $this->getApiByType($type, $payment);
                 $obfuscatedId = $payment->getLocalIdentifier();
                 $amount = (float) $payment->getAmount();
                 $semesterKey = Tools::convertSemesterToSemesterKey($payment->getData());
@@ -153,7 +169,12 @@ class TuitionFeeService extends AbstractPaymentTypesService implements BackendSe
         return true;
     }
 
-    private function getApiByType(string $type): TuitionFeeApi
+    private function getLoggingContext(PaymentPersistence $payment): array
+    {
+        return ['relay-mono-payment-id' => $payment->getIdentifier()];
+    }
+
+    private function getApiByType(string $type, ?PaymentPersistence $payment): TuitionFeeApi
     {
         $config = $this->getConfigByType($type);
         $baseUrl = $config['api_url'] ?? '';
@@ -168,6 +189,10 @@ class TuitionFeeService extends AbstractPaymentTypesService implements BackendSe
 
         $api = new TuitionFeeApi($connection);
         $api->setLogger($this->logger);
+        $api->setAuditLogger($this->auditLogger);
+        if ($payment !== null) {
+            $api->setLoggingContext($this->getLoggingContext($payment));
+        }
 
         return $api;
     }

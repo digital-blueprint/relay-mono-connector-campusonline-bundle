@@ -8,6 +8,7 @@ use GuzzleHttp\Exception\RequestException;
 use League\Uri\UriTemplate;
 use Psr\Log\LoggerAwareInterface;
 use Psr\Log\LoggerAwareTrait;
+use Psr\Log\LoggerInterface;
 use Psr\Log\NullLogger;
 
 class TuitionFeeApi implements LoggerAwareInterface
@@ -16,20 +17,50 @@ class TuitionFeeApi implements LoggerAwareInterface
 
     private $connection;
 
+    /**
+     * @var LoggerInterface
+     */
+    private $auditLogger;
+
+    /**
+     * @var array
+     */
+    private $loggingContext;
+
     public function __construct(Connection $connection)
     {
         $this->connection = $connection;
         $this->logger = new NullLogger();
+        $this->auditLogger = new NullLogger();
+        $this->loggingContext = [];
     }
 
-    private static function createResponseError(RequestException $e): ApiException
+    public function setAuditLogger(LoggerInterface $auditLogger): void
+    {
+        $this->auditLogger = $auditLogger;
+    }
+
+    public function setLoggingContext(array $loggingContext): void
+    {
+        $this->loggingContext = $loggingContext;
+    }
+
+    private function withLoggingContext(array $context = []): array
+    {
+        return array_merge($this->loggingContext, $context);
+    }
+
+    private function createResponseError(RequestException $e): ApiException
     {
         $response = $e->getResponse();
         if ($response === null) {
+            $this->auditLogger->error('CO: unknown error', $this->withLoggingContext());
+
             return new ApiException('Unknown error');
         }
         $data = (string) $response->getBody();
         $json = json_decode($data, true, 512, JSON_THROW_ON_ERROR);
+        $this->auditLogger->error('CO: parse error response', $this->withLoggingContext(['data' => $data]));
         $status = $json['status'] ?? '???';
         $title = $json['title'] ?? 'Unknown error';
         $type = $json['type'] ?? 'unknown type';
@@ -47,13 +78,16 @@ class TuitionFeeApi implements LoggerAwareInterface
 
         $uriTemplate = new UriTemplate('co/tuition-fee-payment-interface/api/version');
         $uri = (string) $uriTemplate->expand();
+
+        $this->auditLogger->debug('CO: getVersion', $this->withLoggingContext());
         try {
             $response = $client->get($uri);
         } catch (RequestException $e) {
-            throw self::createResponseError($e);
+            throw $this->createResponseError($e);
         }
 
         $data = json_decode((string) $response->getBody(), true, 512, JSON_THROW_ON_ERROR);
+        $this->auditLogger->debug('CO: parse getVersion response', $this->withLoggingContext(['data' => $data]));
         $versionData = new Version($data['name'], $data['version']);
 
         return $versionData;
@@ -68,13 +102,16 @@ class TuitionFeeApi implements LoggerAwareInterface
         $uriTemplate = new UriTemplate('co/tuition-fee-payment-interface/api/version/authenticated-version');
         $uri = (string) $uriTemplate->expand();
 
+        $this->auditLogger->debug('CO: getAuthenticatedVersion', $this->withLoggingContext());
+
         try {
             $response = $client->get($uri);
         } catch (RequestException $e) {
-            throw self::createResponseError($e);
+            throw $this->createResponseError($e);
         }
 
         $data = json_decode((string) $response->getBody(), true, 512, JSON_THROW_ON_ERROR);
+        $this->auditLogger->debug('CO: parse getAuthenticatedVersion response', $this->withLoggingContext(['data' => $data]));
         $versionData = new Version($data['name'], $data['version']);
 
         return $versionData;
@@ -89,18 +126,21 @@ class TuitionFeeApi implements LoggerAwareInterface
     {
         $client = $this->connection->getClient();
         $uriTemplate = new UriTemplate('co/tuition-fee-payment-interface/api/open-fees/{obfuscatedId}/current');
-        $uri = (string) $uriTemplate->expand([
+        $inputs = [
             'obfuscatedId' => $obfuscatedId,
-        ]);
+        ];
+        $uri = (string) $uriTemplate->expand($inputs);
+
+        $this->auditLogger->debug('CO: getCurrentFee', $this->withLoggingContext(['inputs' => $inputs]));
 
         try {
             $response = $client->get($uri);
         } catch (RequestException $e) {
-            throw self::createResponseError($e);
+            throw $this->createResponseError($e);
         }
 
         $data = json_decode((string) $response->getBody(), true, 512, JSON_THROW_ON_ERROR);
-
+        $this->auditLogger->debug('CO: parse getCurrentFee response', $this->withLoggingContext(['data' => $data]));
         $fee = new OpenFee($data['semesterKey'], $data['amount']);
 
         return $fee;
@@ -116,19 +156,22 @@ class TuitionFeeApi implements LoggerAwareInterface
     {
         $client = $this->connection->getClient();
         $uriTemplate = new UriTemplate('co/tuition-fee-payment-interface/api/open-fees/{obfuscatedId}/semester/{semesterKey}');
-        $uri = (string) $uriTemplate->expand([
+        $inputs = [
             'obfuscatedId' => $obfuscatedId,
             'semesterKey' => $semesterKey,
-        ]);
+        ];
+        $uri = (string) $uriTemplate->expand($inputs);
+
+        $this->auditLogger->debug('CO: getSemesterFee', $this->withLoggingContext(['inputs' => $inputs]));
 
         try {
             $response = $client->get($uri);
         } catch (RequestException $e) {
-            throw self::createResponseError($e);
+            throw $this->createResponseError($e);
         }
 
         $data = json_decode((string) $response->getBody(), true, 512, JSON_THROW_ON_ERROR);
-        $this->logger->debug('get semester open fee: '.$uri, $data);
+        $this->auditLogger->debug('CO: parse getSemesterFee response', $this->withLoggingContext(['data' => $data]));
 
         $fee = new OpenFee($data['semesterKey'], $data['amount']);
 
@@ -144,18 +187,21 @@ class TuitionFeeApi implements LoggerAwareInterface
     {
         $client = $this->connection->getClient();
         $uriTemplate = new UriTemplate('co/tuition-fee-payment-interface/api/open-fees/{obfuscatedId}');
-        $uri = (string) $uriTemplate->expand([
+        $inputs = [
             'obfuscatedId' => $obfuscatedId,
-        ]);
+        ];
+        $uri = (string) $uriTemplate->expand($inputs);
+
+        $this->auditLogger->debug('CO: getAllFees', $this->withLoggingContext(['inputs' => $inputs]));
 
         try {
             $response = $client->get($uri);
         } catch (RequestException $e) {
-            throw self::createResponseError($e);
+            throw $this->createResponseError($e);
         }
 
         $data = json_decode((string) $response->getBody(), true, 512, JSON_THROW_ON_ERROR);
-        $this->logger->debug('get open fees: '.$uri, $data);
+        $this->auditLogger->debug('CO: parse getAllFees response', $this->withLoggingContext(['data' => $data]));
 
         $items = [];
         foreach (($data['items'] ?? []) as $item) {
@@ -179,26 +225,25 @@ class TuitionFeeApi implements LoggerAwareInterface
         $uriTemplate = new UriTemplate('co/tuition-fee-payment-interface/api/payment-registrations');
         $uri = (string) $uriTemplate->expand();
 
-        $data = [
-            'json' => [
-                'personUid' => $obfuscatedId,
-                'amount' => $amount,
-                'semesterKey' => $semesterKey,
-            ],
+        $inputs = [
+            'personUid' => $obfuscatedId,
+            'amount' => $amount,
+            'semesterKey' => $semesterKey,
         ];
-        $this->logger->debug('register payment request: '.$uri, $data);
+
+        $this->auditLogger->debug('CO: registerPaymentForSemester', $this->withLoggingContext(['inputs' => $inputs]));
 
         try {
-            $response = $client->post($uri, $data);
+            $response = $client->post($uri, ['json' => $inputs]);
         } catch (RequestException $e) {
-            throw self::createResponseError($e);
+            throw $this->createResponseError($e);
         }
 
-        $this->logger->debug('register payment response', [
+        $this->auditLogger->debug('CO: registerPaymentForSemester response', $this->withLoggingContext([
             'status' => $response->getStatusCode(),
             'headers' => $response->getHeaders(),
             'body' => (string) $response->getBody(),
-        ]);
+        ]));
 
         // The API docs say that it returns 201 when the payment is complete, so check just to be sure
         if ($response->getStatusCode() !== 201) {
@@ -218,25 +263,23 @@ class TuitionFeeApi implements LoggerAwareInterface
         $uriTemplate = new UriTemplate('co/tuition-fee-payment-interface/api/payment-registrations');
         $uri = (string) $uriTemplate->expand();
 
-        $data = [
-            'json' => [
-                'personUid' => $obfuscatedId,
-                'amount' => $amount,
-            ],
+        $inputs = [
+            'personUid' => $obfuscatedId,
+            'amount' => $amount,
         ];
-        $this->logger->debug('register payment request: '.$uri, $data);
+        $this->auditLogger->debug('CO: registerPaymentForCurrentSemester', $this->withLoggingContext(['inputs' => $inputs]));
 
         try {
-            $response = $client->post($uri, $data);
+            $response = $client->post($uri, ['json' => $inputs]);
         } catch (RequestException $e) {
-            throw self::createResponseError($e);
+            throw $this->createResponseError($e);
         }
 
-        $this->logger->debug('register payment response', [
+        $this->auditLogger->debug('CO: registerPaymentForSemester response', $this->withLoggingContext([
             'status' => $response->getStatusCode(),
             'headers' => $response->getHeaders(),
             'body' => (string) $response->getBody(),
-        ]);
+        ]));
 
         // The API docs say that it returns 201 when the payment is complete, so check just to be sure
         if ($response->getStatusCode() !== 201) {

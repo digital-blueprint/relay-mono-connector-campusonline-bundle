@@ -7,8 +7,8 @@ services:
     autowire: true
     autoconfigure: true
     public: true
-    tags:
-      - { name: monolog.logger, channel: 'dbp_relay_mono_audit' }
+    calls:
+      - setAuditLogger: ['@monolog.logger.dbp_relay_mono_audit']
 
   Dbp\Relay\MonoConnectorCampusonlineBundle\Service\HealthCheck:
     autowire: true

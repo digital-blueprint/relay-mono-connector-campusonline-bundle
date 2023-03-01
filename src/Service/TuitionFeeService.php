@@ -157,8 +157,8 @@ class TuitionFeeService extends AbstractPaymentTypesService implements BackendSe
                     $this->logger->error('Communication error with backend!', ['exception' => $e]);
                     throw new ApiError(Response::HTTP_INTERNAL_SERVER_ERROR, 'Communication error with backend!');
                 }
+                $notified = true;
             }
-            $notified = true;
         }
 
         return $notified;

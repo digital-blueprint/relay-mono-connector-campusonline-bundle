@@ -116,7 +116,7 @@ class TuitionFeeService extends AbstractPaymentTypesService implements BackendSe
                 throw ApiError::withDetails(Response::HTTP_BAD_REQUEST, 'Amount must be greater than or equal to 1', 'mono:start-payment-amount-too-low');
             }
             $payment->setAmount((string) $amount);
-            $payment->setCurrency(Payment::PRICE_CURRENCY_EUR);
+            $payment->setCurrency('EUR');
 
             $changed = true;
         }

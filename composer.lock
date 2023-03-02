@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "d0b4f0cea5d7062000e1acc9f6b1cb3d",
+    "content-hash": "7d1a4b646fd551312ca15035ccda3779",
     "packages": [
         {
             "name": "api-platform/core",
@@ -315,16 +315,16 @@
         },
         {
             "name": "dbp/relay-mono-bundle",
-            "version": "v0.1.7",
+            "version": "v0.1.9",
             "source": {
                 "type": "git",
                 "url": "https://github.com/digital-blueprint/relay-mono-bundle.git",
-                "reference": "2561281ebc54a70f47ea74b62b17b82f7e8a4213"
+                "reference": "9b1fafa4ceeba7dd2002f1030190dcdc96153b22"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/digital-blueprint/relay-mono-bundle/zipball/2561281ebc54a70f47ea74b62b17b82f7e8a4213",
-                "reference": "2561281ebc54a70f47ea74b62b17b82f7e8a4213",
+                "url": "https://api.github.com/repos/digital-blueprint/relay-mono-bundle/zipball/9b1fafa4ceeba7dd2002f1030190dcdc96153b22",
+                "reference": "9b1fafa4ceeba7dd2002f1030190dcdc96153b22",
                 "shasum": ""
             },
             "require": {
@@ -339,6 +339,7 @@
                 "symfony/uid": "^5.4"
             },
             "require-dev": {
+                "brainmaestro/composer-git-hooks": "^2.8",
                 "friendsofphp/php-cs-fixer": "^3.4",
                 "phpstan/phpstan": "^1.8.7",
                 "phpstan/phpstan-phpunit": "^1.1.1",
@@ -351,6 +352,13 @@
                 "vimeo/psalm": "^4.27"
             },
             "type": "symfony-bundle",
+            "extra": {
+                "hooks": {
+                    "pre-commit": [
+                        "composer lint"
+                    ]
+                }
+            },
             "autoload": {
                 "psr-4": {
                     "Dbp\\Relay\\MonoBundle\\": "src/"
@@ -363,9 +371,9 @@
             "description": "A payment bundle for the Relay API gateway",
             "support": {
                 "issues": "https://github.com/digital-blueprint/relay-mono-bundle/issues",
-                "source": "https://github.com/digital-blueprint/relay-mono-bundle/tree/v0.1.7"
+                "source": "https://github.com/digital-blueprint/relay-mono-bundle/tree/v0.1.9"
             },
-            "time": "2023-02-23T15:12:08+00:00"
+            "time": "2023-03-02T14:44:49+00:00"
         },
         {
             "name": "directorytree/ldaprecord",

@@ -1,3 +1,8 @@
+# v0.1.6
+
+* Cleanup
+* composer: add a pre-commit hook for linting
+
 # v0.1.5
 
 * logs: More and more detailed audit logs

@@ -6,8 +6,8 @@ namespace Dbp\Relay\MonoConnectorCampusonlineBundle\Service;
 
 use Dbp\Relay\CoreBundle\API\UserSessionInterface;
 use Dbp\Relay\CoreBundle\Exception\ApiError;
-use Dbp\Relay\MonoBundle\Entity\Payment;
 use Dbp\Relay\MonoBundle\Entity\PaymentPersistence;
+use Dbp\Relay\MonoBundle\Entity\PaymentStatus;
 use Dbp\Relay\MonoBundle\Service\BackendServiceInterface;
 use Dbp\Relay\MonoConnectorCampusonlineBundle\TuitionFee\ApiException;
 use Dbp\Relay\MonoConnectorCampusonlineBundle\TuitionFee\Connection;
@@ -141,27 +141,25 @@ class TuitionFeeService extends AbstractPaymentTypesService implements BackendSe
 
     public function notify(PaymentPersistence &$payment): bool
     {
-        $notified = false;
-
-        if (!$payment->getNotifiedAt()) {
-            if ($payment->getPaymentStatus() === Payment::PAYMENT_STATUS_COMPLETED) {
-                $this->auditLogger->debug('CO: Registering semester payment', $this->getLoggingContext($payment));
-                $type = $payment->getType();
-                $api = $this->getApiByType($type, $payment);
-                $obfuscatedId = $payment->getLocalIdentifier();
-                $amount = (float) $payment->getAmount();
-                $semesterKey = Tools::convertSemesterToSemesterKey($payment->getData());
-                try {
-                    $api->registerPaymentForSemester($obfuscatedId, $amount, $semesterKey);
-                } catch (ApiException $e) {
-                    $this->logger->error('Communication error with backend!', ['exception' => $e]);
-                    throw new ApiError(Response::HTTP_INTERNAL_SERVER_ERROR, 'Communication error with backend!');
-                }
-                $notified = true;
-            }
+        // This is just a sanity check, we should never be called in another state
+        if ($payment->getNotifiedAt() !== null || $payment->getPaymentStatus() !== PaymentStatus::COMPLETED) {
+            throw new \RuntimeException('notify called in an invalid state');
         }
 
-        return $notified;
+        $this->auditLogger->debug('CO: Registering semester payment', $this->getLoggingContext($payment));
+        $type = $payment->getType();
+        $api = $this->getApiByType($type, $payment);
+        $obfuscatedId = $payment->getLocalIdentifier();
+        $amount = (float) $payment->getAmount();
+        $semesterKey = Tools::convertSemesterToSemesterKey($payment->getData());
+        try {
+            $api->registerPaymentForSemester($obfuscatedId, $amount, $semesterKey);
+        } catch (ApiException $e) {
+            $this->logger->error('Communication error with backend!', ['exception' => $e]);
+            throw new ApiError(Response::HTTP_INTERNAL_SERVER_ERROR, 'Communication error with backend!');
+        }
+
+        return true;
     }
 
     public function cleanup(PaymentPersistence &$payment): bool

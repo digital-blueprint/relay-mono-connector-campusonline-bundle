@@ -6,6 +6,7 @@ namespace Dbp\Relay\MonoConnectorCampusonlineBundle\Service;
 
 use Dbp\Relay\CoreBundle\API\UserSessionInterface;
 use Dbp\Relay\CoreBundle\Exception\ApiError;
+use Dbp\Relay\MonoBundle\Entity\Payment;
 use Dbp\Relay\MonoBundle\Entity\PaymentPersistence;
 use Dbp\Relay\MonoBundle\Entity\PaymentStatus;
 use Dbp\Relay\MonoBundle\Service\BackendServiceInterface;
@@ -76,8 +77,9 @@ class TuitionFeeService extends AbstractPaymentTypesService implements BackendSe
         }
     }
 
-    public function updateData(PaymentPersistence &$payment): bool
+    public function updateData(PaymentPersistence $paymentPersistence): bool
     {
+        $payment = $paymentPersistence;
         $changed = false;
 
         $updateExpiration = new \DateTime('-1 minute');
@@ -121,26 +123,28 @@ class TuitionFeeService extends AbstractPaymentTypesService implements BackendSe
             $changed = true;
         }
 
-        // These things never hit the backend and are translated, so try to update them always
-        $semesterKey = Tools::convertSemesterToSemesterKey($payment->getData());
+        $this->auditLogger->debug('CO: Updating the payment data is done, changed: '.$changed, $this->getLoggingContext($payment));
+
+        return $changed;
+    }
+
+    public function updateEntity(PaymentPersistence $paymentPersistence, Payment $payment): bool
+    {
+        $semesterKey = Tools::convertSemesterToSemesterKey($paymentPersistence->getData());
         $parameters = [
             'semesterKey' => $semesterKey,
             'givenName' => $payment->getGivenName(),
             'familyName' => $payment->getFamilyName(),
         ];
         $alternateName = $this->translator->trans('dbp_relay_mono_connector_campusonline.tuition_fee.alternate_name', $parameters);
-        if ($payment->getAlternateName() !== $alternateName) {
-            $changed = true;
-            $payment->setAlternateName($alternateName);
-        }
+        $payment->setAlternateName($alternateName);
 
-        $this->auditLogger->debug('CO: Updating the payment data is done, changed: '.$changed, $this->getLoggingContext($payment));
-
-        return $changed;
+        return true;
     }
 
-    public function notify(PaymentPersistence &$payment): bool
+    public function notify(PaymentPersistence $paymentPersistence): bool
     {
+        $payment = $paymentPersistence;
         // This is just a sanity check, we should never be called in another state
         if ($payment->getNotifiedAt() !== null || $payment->getPaymentStatus() !== PaymentStatus::COMPLETED) {
             throw new \RuntimeException('notify called in an invalid state');
@@ -162,7 +166,7 @@ class TuitionFeeService extends AbstractPaymentTypesService implements BackendSe
         return true;
     }
 
-    public function cleanup(PaymentPersistence &$payment): bool
+    public function cleanup(PaymentPersistence $paymentPersistence): bool
     {
         return true;
     }

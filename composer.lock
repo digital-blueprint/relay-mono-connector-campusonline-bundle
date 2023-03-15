@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "5936d5f28e7e70c2dd7ad0115c58c32c",
+    "content-hash": "eadac018a3141adc56d3ec92e080684e",
     "packages": [
         {
             "name": "api-platform/core",
@@ -325,16 +325,16 @@
         },
         {
             "name": "dbp/relay-mono-bundle",
-            "version": "v0.2.0",
+            "version": "v0.3.0",
             "source": {
                 "type": "git",
                 "url": "https://github.com/digital-blueprint/relay-mono-bundle.git",
-                "reference": "34c2f8b4746ff4a31d266789dca9c9f757cc3e3b"
+                "reference": "a4a3bf092b1a4b452c5c4919baaf249a058d3ed4"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/digital-blueprint/relay-mono-bundle/zipball/34c2f8b4746ff4a31d266789dca9c9f757cc3e3b",
-                "reference": "34c2f8b4746ff4a31d266789dca9c9f757cc3e3b",
+                "url": "https://api.github.com/repos/digital-blueprint/relay-mono-bundle/zipball/a4a3bf092b1a4b452c5c4919baaf249a058d3ed4",
+                "reference": "a4a3bf092b1a4b452c5c4919baaf249a058d3ed4",
                 "shasum": ""
             },
             "require": {
@@ -381,9 +381,9 @@
             "description": "A payment bundle for the Relay API gateway",
             "support": {
                 "issues": "https://github.com/digital-blueprint/relay-mono-bundle/issues",
-                "source": "https://github.com/digital-blueprint/relay-mono-bundle/tree/v0.2.0"
+                "source": "https://github.com/digital-blueprint/relay-mono-bundle/tree/v0.3.0"
             },
-            "time": "2023-03-13T14:48:34+00:00"
+            "time": "2023-03-15T10:20:24+00:00"
         },
         {
             "name": "directorytree/ldaprecord",

@@ -59,8 +59,14 @@ class TuitionFeeApi implements LoggerAwareInterface
             return new ApiException('Unknown error');
         }
         $data = (string) $response->getBody();
-        $json = json_decode($data, true, 512, JSON_THROW_ON_ERROR);
         $this->auditLogger->error('CO: parse error response', $this->withLoggingContext(['data' => $data]));
+
+        try {
+            $json = json_decode($data, true, 512, JSON_THROW_ON_ERROR);
+        } catch (\JsonException $exception) {
+            return new ApiException($e->getMessage());
+        }
+
         $status = $json['status'] ?? '???';
         $title = $json['title'] ?? 'Unknown error';
         $type = $json['type'] ?? 'unknown type';

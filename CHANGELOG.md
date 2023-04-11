@@ -1,6 +1,10 @@
+# v0.1.10
+
+* Minor cleanups
+
 # v0.1.9
 
-* Only cleanups
+* Better error handling in case CO is down
 
 # v0.1.8
 

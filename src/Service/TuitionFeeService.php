@@ -82,7 +82,7 @@ class TuitionFeeService extends AbstractPaymentTypesService implements BackendSe
         $payment = $paymentPersistence;
         $changed = false;
 
-        $updateExpiration = new \DateTime('-1 minute');
+        $updateExpiration = new \DateTimeImmutable('-1 minute', new \DateTimeZone('UTC'));
         if (
             !$payment->getDataUpdatedAt()
             || $payment->getDataUpdatedAt() <= $updateExpiration

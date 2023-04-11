@@ -18,8 +18,15 @@ class Connection implements LoggerAwareInterface
     private $baseUrl;
     private $clientId;
     private $clientSecret;
+
+    /**
+     * @var ?callable
+     */
     private $clientHandler;
 
+    /**
+     * @var ?string
+     */
     private $token;
 
     public function __construct(string $baseUrl, string $clientId, string $clientSecret)
@@ -30,7 +37,7 @@ class Connection implements LoggerAwareInterface
         $this->logger = new NullLogger();
     }
 
-    public function setClientHandler(?object $handler): void
+    public function setClientHandler(?callable $handler): void
     {
         $this->clientHandler = $handler;
     }
@@ -74,6 +81,7 @@ class Connection implements LoggerAwareInterface
     {
         if ($this->token === null) {
             $this->refreshToken();
+            assert($this->token !== null);
         }
 
         return $this->token;

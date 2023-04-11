@@ -225,7 +225,7 @@ class TuitionFeeApi implements LoggerAwareInterface
      * @param string $obfuscatedId nr_obfuscated
      * @param float  $amount       Amount in Euro
      */
-    public function registerPaymentForSemester(string $obfuscatedId, float $amount, string $semesterKey)
+    public function registerPaymentForSemester(string $obfuscatedId, float $amount, string $semesterKey): void
     {
         $client = $this->connection->getClient();
         $uriTemplate = new UriTemplate('co/tuition-fee-payment-interface/api/payment-registrations');
@@ -263,7 +263,7 @@ class TuitionFeeApi implements LoggerAwareInterface
      * @param string $obfuscatedId nr_obfuscated
      * @param float  $amount       Amount in Euro
      */
-    public function registerPaymentForCurrentSemester(string $obfuscatedId, float $amount)
+    public function registerPaymentForCurrentSemester(string $obfuscatedId, float $amount): void
     {
         $client = $this->connection->getClient();
         $uriTemplate = new UriTemplate('co/tuition-fee-payment-interface/api/payment-registrations');

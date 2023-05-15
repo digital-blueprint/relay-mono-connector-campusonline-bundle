@@ -1,3 +1,7 @@
+# v0.1.11
+
+* Update to api-platform 2.7
+
 # v0.1.10
 
 * Minor cleanups

@@ -57,6 +57,8 @@ class Configuration implements ConfigurationInterface
                                 ->end()
                                 ->scalarNode('ldap_family_name_attribute')
                                 ->end()
+                                ->scalarNode('ldap_honorific_suffix_attribute')
+                                ->end()
                             ->end()
                         ->end()
                     ->end()

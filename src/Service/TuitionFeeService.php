@@ -99,6 +99,7 @@ class TuitionFeeService extends AbstractPaymentTypesService implements BackendSe
             $payment->setLocalIdentifier($ldapData->obfuscatedId);
             $payment->setGivenName($ldapData->givenName);
             $payment->setFamilyName($ldapData->familyName);
+            $payment->setHonorificSuffix($ldapData->honorificSuffix);
 
             $api = $this->getApiByType($payment->getType(), $payment);
             $obfuscatedId = $payment->getLocalIdentifier();
@@ -135,8 +136,13 @@ class TuitionFeeService extends AbstractPaymentTypesService implements BackendSe
             'semesterKey' => $semesterKey,
             'givenName' => $payment->getGivenName(),
             'familyName' => $payment->getFamilyName(),
+            'honorificSuffix' => $payment->getHonorificSuffix(),
         ];
-        $alternateName = $this->translator->trans('dbp_relay_mono_connector_campusonline.tuition_fee.alternate_name', $parameters);
+        if ($parameters['honorificSuffix'] !== null) {
+            $alternateName = $this->translator->trans('dbp_relay_mono_connector_campusonline.tuition_fee.alternate_name_suffix', $parameters);
+        } else {
+            $alternateName = $this->translator->trans('dbp_relay_mono_connector_campusonline.tuition_fee.alternate_name', $parameters);
+        }
         $payment->setAlternateName($alternateName);
 
         return true;

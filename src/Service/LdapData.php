@@ -20,4 +20,9 @@ class LdapData
      * @var string
      */
     public $familyName;
+
+    /**
+     * @var ?string
+     */
+    public $honorificSuffix;
 }

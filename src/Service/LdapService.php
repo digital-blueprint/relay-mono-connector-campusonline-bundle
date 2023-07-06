@@ -20,6 +20,7 @@ class LdapService extends AbstractPaymentTypesService implements LoggerAwareInte
         'ldap_obfuscated_id_attribute' => 'obfuscatedId',
         'ldap_given_name_attribute' => 'givenName',
         'ldap_family_name_attribute' => 'familyName',
+        'ldap_honorific_suffix_attribute' => 'honorificSuffix',
     ];
 
     private function getLdapConfig(array $config): array

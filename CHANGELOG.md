@@ -1,4 +1,4 @@
-# unreleased
+# v0.1.12
 
 * Add a new "ldap_honorific_suffix_attribute" config option for optionally fetching a honorific suffix from LDAP
   and include it in the payment details.

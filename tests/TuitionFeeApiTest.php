@@ -62,6 +62,17 @@ class TuitionFeeApiTest extends TestCase
         $this->assertSame($fee->getSemesterKey(), '2022S');
     }
 
+    public function testGetCurrentFeeBrokenAPI()
+    {
+        // This is a real internal error we got. Re-use it to test the error parsing.
+        $this->mockResponses([
+            new Response(500, ['Content-Type' => 'application/json'], '{"detail": "java.lang.IllegalStateException: RESTEASY004575: Input stream was empty, there is no entity - RESTEASY003765: Response is closed.", "status": 500, "title": "Failed parsing response from public API", "type": "at.swgt.rest.client.exception.CoPublicApiWebApplicationException"}'),
+        ]);
+
+        $this->expectException(ApiException::class);
+        $this->api->getCurrentFee('DEADBEEF');
+    }
+
     public function testGetCurrentFeeNotFound()
     {
         $this->mockResponses([

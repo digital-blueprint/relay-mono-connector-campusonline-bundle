@@ -77,6 +77,23 @@ class TuitionFeeService extends AbstractPaymentTypesService implements BackendSe
         }
     }
 
+    public function checkBackendConnection()
+    {
+        // In case the API is working, but the connection to the CO backend
+        // is broken, then getAuthenticatedVersion() will succeed, but everything else
+        // will fail with a 5xx. Use the getCurrentFee API with a non-existing ID to also cover that case.
+        foreach ($this->getTypes() as $type) {
+            $api = $this->getApiByType($type, null);
+            try {
+                $api->getCurrentFee(uniqid('relay-health-check', true));
+            } catch (ApiException $e) {
+                if ($e->httpStatusCode !== 404) {
+                    throw $e;
+                }
+            }
+        }
+    }
+
     public function updateData(PaymentPersistence $paymentPersistence): bool
     {
         $payment = $paymentPersistence;

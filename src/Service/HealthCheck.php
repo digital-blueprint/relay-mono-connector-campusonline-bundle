@@ -45,6 +45,7 @@ class HealthCheck implements CheckInterface
         $results[] = $this->checkMethod('Check if we can connect to the LDAP server', [$this->ldap, 'checkConnection']);
         $results[] = $this->checkMethod('Check if we can connect to the CO API', [$this->tuitionfee, 'checkConnectionNoAuth']);
         $results[] = $this->checkMethod('Check if we can authenticate with the CO API', [$this->tuitionfee, 'checkConnection']);
+        $results[] = $this->checkMethod('Check if the CO API can talk to its backend', [$this->tuitionfee, 'checkBackendConnection']);
 
         return $results;
     }

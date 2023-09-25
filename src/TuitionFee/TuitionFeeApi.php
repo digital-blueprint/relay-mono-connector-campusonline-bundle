@@ -72,7 +72,10 @@ class TuitionFeeApi implements LoggerAwareInterface
         $type = $json['type'] ?? 'unknown type';
         $message = "[$status] $title ($type)";
 
-        return new ApiException($message);
+        $error = new ApiException($message);
+        $error->httpStatusCode = $response->getStatusCode();
+
+        return $error;
     }
 
     /**

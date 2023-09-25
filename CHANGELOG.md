@@ -1,3 +1,7 @@
+# v0.1.13
+
+* Improve the health check to also fail in case the CO tuition fee API is working, but the CO backend connection is broken.
+
 # v0.1.12
 
 * Add a new "ldap_honorific_suffix_attribute" config option for optionally fetching a honorific suffix from LDAP

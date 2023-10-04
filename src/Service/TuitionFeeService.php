@@ -6,10 +6,10 @@ namespace Dbp\Relay\MonoConnectorCampusonlineBundle\Service;
 
 use Dbp\Relay\CoreBundle\API\UserSessionInterface;
 use Dbp\Relay\CoreBundle\Exception\ApiError;
-use Dbp\Relay\MonoBundle\Entity\Payment;
-use Dbp\Relay\MonoBundle\Entity\PaymentPersistence;
-use Dbp\Relay\MonoBundle\Entity\PaymentStatus;
-use Dbp\Relay\MonoBundle\Service\BackendServiceInterface;
+use Dbp\Relay\MonoBundle\ApiPlatform\Payment;
+use Dbp\Relay\MonoBundle\BackendServiceProvider\BackendServiceInterface;
+use Dbp\Relay\MonoBundle\Persistence\PaymentPersistence;
+use Dbp\Relay\MonoBundle\Persistence\PaymentStatus;
 use Dbp\Relay\MonoConnectorCampusonlineBundle\TuitionFee\ApiException;
 use Dbp\Relay\MonoConnectorCampusonlineBundle\TuitionFee\Connection;
 use Dbp\Relay\MonoConnectorCampusonlineBundle\TuitionFee\TuitionFeeApi;

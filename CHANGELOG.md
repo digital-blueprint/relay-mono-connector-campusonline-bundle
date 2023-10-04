@@ -1,3 +1,7 @@
+# v0.1.14
+
+  * Compatibility with mono-bundle v0.4
+
 # v0.1.13
 
 * Improve the health check to also fail in case the CO tuition fee API is working, but the CO backend connection is broken.

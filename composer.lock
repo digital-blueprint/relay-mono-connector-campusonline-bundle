@@ -177,16 +177,16 @@
         },
         {
             "name": "dbp/relay-core-bundle",
-            "version": "v0.1.126",
+            "version": "v0.1.127",
             "source": {
                 "type": "git",
                 "url": "https://github.com/digital-blueprint/relay-core-bundle.git",
-                "reference": "ec0a94b3eb6a20643d3757f69c7babb43422965a"
+                "reference": "f2f9393c14907a68a5970568c895fb9b5f0813ef"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/digital-blueprint/relay-core-bundle/zipball/ec0a94b3eb6a20643d3757f69c7babb43422965a",
-                "reference": "ec0a94b3eb6a20643d3757f69c7babb43422965a",
+                "url": "https://api.github.com/repos/digital-blueprint/relay-core-bundle/zipball/f2f9393c14907a68a5970568c895fb9b5f0813ef",
+                "reference": "f2f9393c14907a68a5970568c895fb9b5f0813ef",
                 "shasum": ""
             },
             "require": {
@@ -254,22 +254,22 @@
             "description": "The core bundle of the Relay API gateway",
             "support": {
                 "issues": "https://github.com/digital-blueprint/relay-core-bundle/issues",
-                "source": "https://github.com/digital-blueprint/relay-core-bundle/tree/v0.1.126"
+                "source": "https://github.com/digital-blueprint/relay-core-bundle/tree/v0.1.127"
             },
-            "time": "2023-10-04T09:11:12+00:00"
+            "time": "2023-10-05T07:41:23+00:00"
         },
         {
             "name": "dbp/relay-mono-bundle",
-            "version": "v0.4.0",
+            "version": "v0.4.1",
             "source": {
                 "type": "git",
                 "url": "https://github.com/digital-blueprint/relay-mono-bundle.git",
-                "reference": "eb662fe90ab72b55899ddc033ec22e6a47d21760"
+                "reference": "a716903613ee6dd11c61c35f6473c7d4295fb8df"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/digital-blueprint/relay-mono-bundle/zipball/eb662fe90ab72b55899ddc033ec22e6a47d21760",
-                "reference": "eb662fe90ab72b55899ddc033ec22e6a47d21760",
+                "url": "https://api.github.com/repos/digital-blueprint/relay-mono-bundle/zipball/a716903613ee6dd11c61c35f6473c7d4295fb8df",
+                "reference": "a716903613ee6dd11c61c35f6473c7d4295fb8df",
                 "shasum": ""
             },
             "require": {
@@ -316,9 +316,9 @@
             "description": "A payment bundle for the Relay API gateway",
             "support": {
                 "issues": "https://github.com/digital-blueprint/relay-mono-bundle/issues",
-                "source": "https://github.com/digital-blueprint/relay-mono-bundle/tree/v0.4.0"
+                "source": "https://github.com/digital-blueprint/relay-mono-bundle/tree/v0.4.1"
             },
-            "time": "2023-10-03T14:17:39+00:00"
+            "time": "2023-10-05T11:41:07+00:00"
         },
         {
             "name": "directorytree/ldaprecord",
@@ -12504,5 +12504,5 @@
     "platform-overrides": {
         "php": "7.3"
     },
-    "plugin-api-version": "2.3.0"
+    "plugin-api-version": "2.6.0"
 }

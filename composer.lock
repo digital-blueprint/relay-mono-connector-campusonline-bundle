@@ -260,16 +260,16 @@
         },
         {
             "name": "dbp/relay-mono-bundle",
-            "version": "v0.4.1",
+            "version": "v0.4.2",
             "source": {
                 "type": "git",
                 "url": "https://github.com/digital-blueprint/relay-mono-bundle.git",
-                "reference": "a716903613ee6dd11c61c35f6473c7d4295fb8df"
+                "reference": "f0d7802db1048486e83c05f3e92586494a7cf903"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/digital-blueprint/relay-mono-bundle/zipball/a716903613ee6dd11c61c35f6473c7d4295fb8df",
-                "reference": "a716903613ee6dd11c61c35f6473c7d4295fb8df",
+                "url": "https://api.github.com/repos/digital-blueprint/relay-mono-bundle/zipball/f0d7802db1048486e83c05f3e92586494a7cf903",
+                "reference": "f0d7802db1048486e83c05f3e92586494a7cf903",
                 "shasum": ""
             },
             "require": {
@@ -316,9 +316,9 @@
             "description": "A payment bundle for the Relay API gateway",
             "support": {
                 "issues": "https://github.com/digital-blueprint/relay-mono-bundle/issues",
-                "source": "https://github.com/digital-blueprint/relay-mono-bundle/tree/v0.4.1"
+                "source": "https://github.com/digital-blueprint/relay-mono-bundle/tree/v0.4.2"
             },
-            "time": "2023-10-05T11:41:07+00:00"
+            "time": "2023-11-02T12:17:03+00:00"
         },
         {
             "name": "directorytree/ldaprecord",

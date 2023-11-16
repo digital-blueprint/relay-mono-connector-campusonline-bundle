@@ -1,6 +1,10 @@
+# v0.1.15
+
+* Minor test cleanups
+
 # v0.1.14
 
-  * Compatibility with mono-bundle v0.4
+* Compatibility with mono-bundle v0.4
 
 # v0.1.13
 

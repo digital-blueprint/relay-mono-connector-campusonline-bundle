@@ -1,3 +1,7 @@
+# v0.1.16
+
+* Drop support for PHP 7.3
+
 # v0.1.15
 
 * Minor test cleanups

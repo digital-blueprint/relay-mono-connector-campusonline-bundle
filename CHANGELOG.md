@@ -1,3 +1,7 @@
+# v0.1.20
+
+* Update to directorytree/ldaprecord v3.6
+
 # v0.1.19
 
 * Add support for Symfony 6

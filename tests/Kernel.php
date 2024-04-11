@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace Dbp\Relay\MonoConnectorCampusonlineBundle\Tests;
 
 use ApiPlatform\Symfony\Bundle\ApiPlatformBundle;
+use Dbp\Relay\BasePersonBundle\DbpRelayBasePersonBundle;
 use Dbp\Relay\CoreBundle\DbpRelayCoreBundle;
 use Dbp\Relay\MonoBundle\DbpRelayMonoBundle;
 use Dbp\Relay\MonoConnectorCampusonlineBundle\DbpRelayMonoConnectorCampusonlineBundle;
@@ -37,6 +38,7 @@ class Kernel extends BaseKernel
         yield new ApiPlatformBundle();
         yield new DbpRelayMonoBundle();
         yield new DbpRelayMonoConnectorCampusonlineBundle();
+        yield new DbpRelayBasePersonBundle();
         yield new DbpRelayCoreBundle();
     }
 
@@ -83,12 +85,6 @@ class Kernel extends BaseKernel
                     'api_url' => '',
                     'client_id' => '',
                     'client_secret' => '',
-                    'ldap_host' => '',
-                    'ldap_base_dn' => '',
-                    'ldap_username' => '',
-                    'ldap_password' => '',
-                    'ldap_identifier_attribute' => '',
-                    'ldap_obfuscated_id_attribute' => '',
                 ],
             ],
         ]);

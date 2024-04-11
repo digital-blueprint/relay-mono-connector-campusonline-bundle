@@ -295,4 +295,12 @@ class TuitionFeeApi implements LoggerAwareInterface
             throw new ApiException('Wrong status code: '.$response->getStatusCode());
         }
     }
+
+    /**
+     * For unit testing only.
+     */
+    public function getConnection(): Connection
+    {
+        return $this->connection;
+    }
 }

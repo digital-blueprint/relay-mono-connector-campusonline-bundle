@@ -4,8 +4,10 @@ declare(strict_types=1);
 
 namespace Dbp\Relay\MonoConnectorCampusonlineBundle\Service;
 
+use Dbp\Relay\BasePersonBundle\API\PersonProviderInterface;
 use Dbp\Relay\CoreBundle\API\UserSessionInterface;
 use Dbp\Relay\CoreBundle\Exception\ApiError;
+use Dbp\Relay\CoreBundle\Rest\Options;
 use Dbp\Relay\MonoBundle\ApiPlatform\Payment;
 use Dbp\Relay\MonoBundle\BackendServiceProvider\BackendServiceInterface;
 use Dbp\Relay\MonoBundle\Persistence\PaymentPersistence;
@@ -24,41 +26,41 @@ class TuitionFeeService extends AbstractPaymentTypesService implements BackendSe
 {
     use LoggerAwareTrait;
 
-    /**
-     * @var LdapService
-     */
-    private $ldapService;
+    public const PERSON_TITLE_LOCAL_DATA_ATTRIBUTE = 'title';
+
+    private UserSessionInterface $userSession;
+    private TranslatorInterface $translator;
+    private LoggerInterface $auditLogger;
+    private PersonProviderInterface $personProvider;
 
     /**
-     * @var UserSessionInterface
+     * @var callable|null
      */
-    private $userSession;
-
-    /**
-     * @var TranslatorInterface
-     */
-    private $translator;
-
-    /**
-     * @var LoggerInterface
-     */
-    private $auditLogger;
+    private $clientHandler;
 
     public function __construct(
         TranslatorInterface $translator,
-        LdapService $ldapService,
-        UserSessionInterface $userSession
+        UserSessionInterface $userSession,
+        PersonProviderInterface $personProvider
     ) {
         $this->translator = $translator;
-        $this->ldapService = $ldapService;
         $this->userSession = $userSession;
         $this->logger = new NullLogger();
         $this->auditLogger = new NullLogger();
+        $this->personProvider = $personProvider;
     }
 
     public function setAuditLogger(LoggerInterface $auditLogger): void
     {
         $this->auditLogger = $auditLogger;
+    }
+
+    /**
+     * For unit testing only.
+     */
+    public function setClientHandler(?callable $handler): void
+    {
+        $this->clientHandler = $handler;
     }
 
     public function checkConnectionNoAuth()
@@ -110,13 +112,14 @@ class TuitionFeeService extends AbstractPaymentTypesService implements BackendSe
                 throw new ApiError(Response::HTTP_UNAUTHORIZED, 'No user identifier!');
             }
 
-            $type = $payment->getType();
-            $ldapData = $this->ldapService->getDataByIdentifier($type, $userIdentifier);
+            $personProviderOptions = [];
+            $person = $this->personProvider->getPerson($userIdentifier,
+                Options::requestLocalDataAttributes($personProviderOptions, [self::PERSON_TITLE_LOCAL_DATA_ATTRIBUTE]));
 
-            $payment->setLocalIdentifier($ldapData->obfuscatedId);
-            $payment->setGivenName($ldapData->givenName);
-            $payment->setFamilyName($ldapData->familyName);
-            $payment->setHonorificSuffix($ldapData->honorificSuffix);
+            $payment->setLocalIdentifier($person->getIdentifier());
+            $payment->setGivenName($person->getGivenName());
+            $payment->setFamilyName($person->getFamilyName());
+            $payment->setHonorificSuffix($person->getLocalDataValue(self::PERSON_TITLE_LOCAL_DATA_ATTRIBUTE));
 
             $api = $this->getApiByType($payment->getType(), $payment);
             $obfuscatedId = $payment->getLocalIdentifier();
@@ -211,6 +214,10 @@ class TuitionFeeService extends AbstractPaymentTypesService implements BackendSe
             $clientId,
             $clientSecret
         );
+
+        if ($this->clientHandler !== null) {
+            $connection->setClientHandler($this->clientHandler);
+        }
 
         $api = new TuitionFeeApi($connection);
         $api->setLogger($this->logger);

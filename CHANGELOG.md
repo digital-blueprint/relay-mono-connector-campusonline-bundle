@@ -1,3 +1,10 @@
+# v0.2.0
+
+* Replace LDAP Api by PersonProviderInterface (requires dbp/relay-base-person-bundle and a base-person-connector-bundle
+the respective person subsystem to be installed (e.g. dbp/relay-base-person-connector-ldap-bundle) and the local
+data attribute 'title' to be configured/provided
+* Add unit tests for the TuitionFeeService
+
 # v0.1.20
 
 * Update to directorytree/ldaprecord v3.6

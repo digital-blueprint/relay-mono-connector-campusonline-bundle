@@ -1,3 +1,7 @@
+# v0.2.1
+
+* Add support for api-platform 3.2
+
 # v0.2.0
 
 * Replace LDAP Api by PersonProviderInterface (requires dbp/relay-base-person-bundle and a base-person-connector-bundle

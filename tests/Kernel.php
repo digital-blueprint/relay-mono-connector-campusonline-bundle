@@ -88,9 +88,5 @@ class Kernel extends BaseKernel
                 ],
             ],
         ]);
-
-        $container->extension('api_platform', [
-            'metadata_backward_compatibility_layer' => false,
-        ]);
     }
 }

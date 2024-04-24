@@ -1,5 +1,11 @@
 # Changelog
 
+## v0.2.2
+
+* Port to PHPUnit 10
+* Remove unused ldap dependencies
+* docs: Remove outdated LDAP information
+
 ## v0.2.1
 
 * Add support for api-platform 3.2

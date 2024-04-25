@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Dbp\Relay\MonoConnectorCampusonlineBundle\Command;
 
+use Dbp\Relay\MonoConnectorCampusonlineBundle\Service\ConfigurationService;
 use Dbp\Relay\MonoConnectorCampusonlineBundle\Service\TuitionFeeService;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Helper\Table;
@@ -15,12 +16,14 @@ use Symfony\Component\Console\Output\OutputInterface;
 class ListTuitionFeesCommand extends Command
 {
     private TuitionFeeService $tuitionFeeService;
+    private ConfigurationService $config;
 
-    public function __construct(TuitionFeeService $tuitionFeeService)
+    public function __construct(TuitionFeeService $tuitionFeeService, ConfigurationService $config)
     {
         parent::__construct();
 
         $this->tuitionFeeService = $tuitionFeeService;
+        $this->config = $config;
     }
 
     protected function configure(): void
@@ -35,7 +38,7 @@ class ListTuitionFeesCommand extends Command
     {
         $paymentType = $input->getArgument('payment-type');
         $obfuscatedId = $input->getArgument('obfuscated-id');
-        $types = $this->tuitionFeeService->getTypes();
+        $types = $this->config->getTypes();
         if (!in_array($paymentType, $types, true)) {
             throw new \RuntimeException('Unknown payment type, must be one of: '.implode(', ', $types));
         }

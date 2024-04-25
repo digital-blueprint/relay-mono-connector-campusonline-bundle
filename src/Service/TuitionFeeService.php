@@ -22,7 +22,7 @@ use Psr\Log\NullLogger;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Contracts\Translation\TranslatorInterface;
 
-class TuitionFeeService extends AbstractPaymentTypesService implements BackendServiceInterface, LoggerAwareInterface
+class TuitionFeeService implements BackendServiceInterface, LoggerAwareInterface
 {
     use LoggerAwareTrait;
 
@@ -37,17 +37,20 @@ class TuitionFeeService extends AbstractPaymentTypesService implements BackendSe
      * @var callable|null
      */
     private $clientHandler;
+    private ConfigurationService $config;
 
     public function __construct(
         TranslatorInterface $translator,
         UserSessionInterface $userSession,
-        PersonProviderInterface $personProvider
+        PersonProviderInterface $personProvider,
+        ConfigurationService $config,
     ) {
         $this->translator = $translator;
         $this->userSession = $userSession;
         $this->logger = new NullLogger();
         $this->auditLogger = new NullLogger();
         $this->personProvider = $personProvider;
+        $this->config = $config;
     }
 
     public function setAuditLogger(LoggerInterface $auditLogger): void
@@ -65,7 +68,7 @@ class TuitionFeeService extends AbstractPaymentTypesService implements BackendSe
 
     public function checkConnectionNoAuth()
     {
-        foreach ($this->getTypes() as $type) {
+        foreach ($this->config->getTypes() as $type) {
             $api = $this->getApiByType($type, null);
             $api->getVersion();
         }
@@ -73,7 +76,7 @@ class TuitionFeeService extends AbstractPaymentTypesService implements BackendSe
 
     public function checkConnection()
     {
-        foreach ($this->getTypes() as $type) {
+        foreach ($this->config->getTypes() as $type) {
             $api = $this->getApiByType($type, null);
             $api->getAuthenticatedVersion();
         }
@@ -84,7 +87,7 @@ class TuitionFeeService extends AbstractPaymentTypesService implements BackendSe
         // In case the API is working, but the connection to the CO backend
         // is broken, then getAuthenticatedVersion() will succeed, but everything else
         // will fail with a 5xx. Use the getCurrentFee API with a non-existing ID to also cover that case.
-        foreach ($this->getTypes() as $type) {
+        foreach ($this->config->getTypes() as $type) {
             $api = $this->getApiByType($type, null);
             try {
                 $api->getCurrentFee(uniqid('relay-health-check', true));
@@ -204,7 +207,7 @@ class TuitionFeeService extends AbstractPaymentTypesService implements BackendSe
 
     public function getApiByType(string $type, ?PaymentPersistence $payment): TuitionFeeApi
     {
-        $config = $this->getConfigByType($type);
+        $config = $this->config->getPaymentTypeConfig($type);
         $baseUrl = $config['api_url'] ?? '';
         $clientId = $config['client_id'] ?? '';
         $clientSecret = $config['client_secret'] ?? '';

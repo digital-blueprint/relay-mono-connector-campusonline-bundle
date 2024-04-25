@@ -5,7 +5,7 @@ declare(strict_types=1);
 namespace Dbp\Relay\MonoConnectorCampusonlineBundle\DependencyInjection;
 
 use Dbp\Relay\CoreBundle\Extension\ExtensionTrait;
-use Dbp\Relay\MonoConnectorCampusonlineBundle\Service\TuitionFeeService;
+use Dbp\Relay\MonoConnectorCampusonlineBundle\Service\ConfigurationService;
 use Symfony\Component\Config\FileLocator;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
 use Symfony\Component\DependencyInjection\Loader\YamlFileLoader;
@@ -23,7 +23,7 @@ class DbpRelayMonoConnectorCampusonlineExtension extends ConfigurableExtension
         );
         $loader->load('services.yaml');
 
-        $definition = $container->getDefinition(TuitionFeeService::class);
+        $definition = $container->getDefinition(ConfigurationService::class);
         $definition->addMethodCall('setConfig', [$mergedConfig]);
     }
 }

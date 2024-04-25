@@ -13,3 +13,7 @@ services:
   Dbp\Relay\MonoConnectorCampusonlineBundle\Command\ListTuitionFeesCommand:
     autowire: true
     autoconfigure: true
+
+  Dbp\Relay\MonoConnectorCampusonlineBundle\Service\ConfigurationService:
+    autowire: true
+    autoconfigure: true

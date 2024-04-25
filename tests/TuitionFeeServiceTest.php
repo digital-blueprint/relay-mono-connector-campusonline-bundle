@@ -9,6 +9,7 @@ use Dbp\Relay\BasePersonBundle\Service\DummyPersonProvider;
 use Dbp\Relay\CoreBundle\Exception\ApiError;
 use Dbp\Relay\CoreBundle\TestUtils\TestUserSession;
 use Dbp\Relay\MonoBundle\Persistence\PaymentPersistence;
+use Dbp\Relay\MonoConnectorCampusonlineBundle\Service\ConfigurationService;
 use Dbp\Relay\MonoConnectorCampusonlineBundle\Service\Tools;
 use Dbp\Relay\MonoConnectorCampusonlineBundle\Service\TuitionFeeService;
 use GuzzleHttp\Handler\MockHandler;
@@ -31,9 +32,8 @@ class TuitionFeeServiceTest extends KernelTestCase
         $person->setGivenName('John');
         $person->setFamilyName('Doe');
         $dummyPersonProvider->setCurrentPerson($person);
-        $this->tuitionFeeService = new TuitionFeeService(new Translator('de'),
-            new TestUserSession('testuser'), $dummyPersonProvider);
-        $this->tuitionFeeService->setConfig([
+        $config = new ConfigurationService();
+        $config->setConfig([
             'payment_types' => [
                 'test_payment_type' => [
                     'api_url' => 'http://localhost',
@@ -42,6 +42,8 @@ class TuitionFeeServiceTest extends KernelTestCase
                 ],
             ],
         ]);
+        $this->tuitionFeeService = new TuitionFeeService(new Translator('de'),
+            new TestUserSession('testuser'), $dummyPersonProvider, $config);
     }
 
     private function mockResponses(array $responses)

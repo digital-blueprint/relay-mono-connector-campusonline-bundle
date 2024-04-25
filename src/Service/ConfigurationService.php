@@ -4,17 +4,11 @@ declare(strict_types=1);
 
 namespace Dbp\Relay\MonoConnectorCampusonlineBundle\Service;
 
-abstract class AbstractPaymentTypesService
+class ConfigurationService
 {
-    /**
-     * @var array
-     */
-    private $config = [];
+    private array $config = [];
 
-    /**
-     * @return void
-     */
-    public function setConfig(array $config)
+    public function setConfig(array $config): void
     {
         $this->config = $config;
     }
@@ -27,7 +21,10 @@ abstract class AbstractPaymentTypesService
         return array_keys($this->config['payment_types']);
     }
 
-    protected function getConfigByType(string $type): array
+    /**
+     * @return array<string,string>
+     */
+    public function getPaymentTypeConfig(string $type): array
     {
         if (array_key_exists($type, $this->config['payment_types'])) {
             return $this->config['payment_types'][$type];

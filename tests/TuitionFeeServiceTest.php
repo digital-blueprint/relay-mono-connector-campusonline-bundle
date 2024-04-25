@@ -8,6 +8,7 @@ use Dbp\Relay\BasePersonBundle\Entity\Person;
 use Dbp\Relay\BasePersonBundle\Service\DummyPersonProvider;
 use Dbp\Relay\CoreBundle\Exception\ApiError;
 use Dbp\Relay\CoreBundle\TestUtils\TestUserSession;
+use Dbp\Relay\MonoBundle\ApiPlatform\Payment;
 use Dbp\Relay\MonoBundle\Persistence\PaymentPersistence;
 use Dbp\Relay\MonoBundle\Persistence\PaymentStatus;
 use Dbp\Relay\MonoConnectorCampusonlineBundle\Service\ConfigurationService;
@@ -18,7 +19,6 @@ use GuzzleHttp\HandlerStack;
 use GuzzleHttp\Psr7\Response;
 use Symfony\Bundle\FrameworkBundle\Test\KernelTestCase;
 use Symfony\Component\HttpFoundation\Response as HttpResponse;
-use Symfony\Component\Translation\Translator;
 use Symfony\Contracts\Translation\TranslatorInterface;
 
 class TuitionFeeServiceTest extends KernelTestCase
@@ -43,7 +43,8 @@ class TuitionFeeServiceTest extends KernelTestCase
                 ],
             ],
         ]);
-        $this->tuitionFeeService = new TuitionFeeService(new Translator('de'),
+        $translator = self::getContainer()->get(TranslatorInterface::class);
+        $this->tuitionFeeService = new TuitionFeeService($translator,
             new TestUserSession('testuser'), $dummyPersonProvider, $config);
     }
 
@@ -156,5 +157,54 @@ class TuitionFeeServiceTest extends KernelTestCase
             $this->assertSame($apiError->getStatusCode(), HttpResponse::HTTP_BAD_REQUEST);
             $this->assertSame($apiError->getErrorId(), 'mono:start-payment-amount-too-low');
         }
+    }
+
+    public function testUpdateEntity()
+    {
+        $paymentPersistence = new PaymentPersistence();
+        $paymentPersistence->setData('22S');
+        $payment = new Payment();
+        $payment->setFamilyName('family');
+        $payment->setGivenName('given');
+        $this->assertTrue($this->tuitionFeeService->updateEntity($paymentPersistence, $payment));
+        $this->assertSame('Tuition fee (2022S) for family, given', $payment->getAlternateName());
+        $payment->setHonorificSuffix('suffix');
+        $this->assertTrue($this->tuitionFeeService->updateEntity($paymentPersistence, $payment));
+        $this->assertSame('Tuition fee (2022S) for family, given, suffix', $payment->getAlternateName());
+    }
+
+    public function testCleanup()
+    {
+        $paymentPersistence = new PaymentPersistence();
+        $this->assertTrue($this->tuitionFeeService->cleanup($paymentPersistence));
+    }
+
+    public function testCheckConnectionNoAuth()
+    {
+        $this->mockResponses([
+            new Response(200, ['Content-Type' => 'application/json'], '{"name":"tuinx","version":"1.0.0-SNAPSHOT"}'),
+        ]);
+        $this->tuitionFeeService->checkConnectionNoAuth();
+        $this->assertTrue(true);
+    }
+
+    public function testCheckConnection()
+    {
+        $this->mockResponses([
+            new Response(201, ['Content-Type' => 'application/json'], '{"access_token":"testtoken"}'),
+            new Response(200, ['Content-Type' => 'application/json'], '{"name":"tuinx","version":"1.0.0-SNAPSHOT"}'),
+        ]);
+        $this->tuitionFeeService->checkConnection();
+        $this->assertTrue(true);
+    }
+
+    public function testCheckBackendConnection()
+    {
+        $this->mockResponses([
+            new Response(201, ['Content-Type' => 'application/json'], '{"access_token":"testtoken"}'),
+            new Response(404, ['Content-Type' => 'application/json'], '{"status":404,"title":"Not Found","type":"exception:at.swgt.rest.client.exception.CoPublicApiWebApplicationException"}'),
+        ]);
+        $this->tuitionFeeService->checkBackendConnection();
+        $this->assertTrue(true);
     }
 }

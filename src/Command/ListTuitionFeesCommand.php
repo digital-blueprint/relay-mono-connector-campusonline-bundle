@@ -18,12 +18,18 @@ class ListTuitionFeesCommand extends Command
     private TuitionFeeService $tuitionFeeService;
     private ConfigurationService $config;
 
+    /**
+     * @var callable|null
+     */
+    private $clientHandler;
+
     public function __construct(TuitionFeeService $tuitionFeeService, ConfigurationService $config)
     {
         parent::__construct();
 
         $this->tuitionFeeService = $tuitionFeeService;
         $this->config = $config;
+        $this->clientHandler = null;
     }
 
     protected function configure(): void
@@ -32,6 +38,11 @@ class ListTuitionFeesCommand extends Command
         $this->setDescription('List tuition fees for a student');
         $this->addArgument('payment-type', InputArgument::REQUIRED, 'payment type');
         $this->addArgument('obfuscated-id', InputArgument::REQUIRED, 'obfuscated id');
+    }
+
+    public function setClientHandler(?callable $handler): void
+    {
+        $this->clientHandler = $handler;
     }
 
     protected function execute(InputInterface $input, OutputInterface $output): int
@@ -43,6 +54,9 @@ class ListTuitionFeesCommand extends Command
             throw new \RuntimeException('Unknown payment type, must be one of: '.implode(', ', $types));
         }
 
+        if ($this->clientHandler !== null) {
+            $this->tuitionFeeService->setClientHandler($this->clientHandler);
+        }
         $api = $this->tuitionFeeService->getApiByType($paymentType, null);
         $feeList = $api->getAllFees($obfuscatedId);
         $currentFee = $api->getCurrentFee($obfuscatedId);

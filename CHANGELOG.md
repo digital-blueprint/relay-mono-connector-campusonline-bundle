@@ -1,5 +1,12 @@
 # Changelog
 
+## v0.2.3
+
+* Add CLI command "dbp:relay:mono-connector-campusonline:list-tuition-fee" to list the tuition
+  fees for a person in CAMPUSonline.
+* Make sure to fail if the payment is larger than the tuition fee, even if such
+  a case should never happen.
+
 ## v0.2.2
 
 * Port to PHPUnit 10

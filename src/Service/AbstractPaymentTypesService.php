@@ -22,7 +22,7 @@ abstract class AbstractPaymentTypesService
     /**
      * @return string[]
      */
-    protected function getTypes(): array
+    public function getTypes(): array
     {
         return array_keys($this->config['payment_types']);
     }

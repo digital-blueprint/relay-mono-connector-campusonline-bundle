@@ -202,7 +202,7 @@ class TuitionFeeService extends AbstractPaymentTypesService implements BackendSe
         return ['relay-mono-payment-id' => $payment->getIdentifier()];
     }
 
-    private function getApiByType(string $type, ?PaymentPersistence $payment): TuitionFeeApi
+    public function getApiByType(string $type, ?PaymentPersistence $payment): TuitionFeeApi
     {
         $config = $this->getConfigByType($type);
         $baseUrl = $config['api_url'] ?? '';

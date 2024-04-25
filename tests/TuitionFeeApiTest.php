@@ -95,6 +95,19 @@ class TuitionFeeApiTest extends TestCase
         $this->assertSame($fee->getSemesterKey(), '2023S');
     }
 
+    public function testGetSemesterFeeNegative()
+    {
+        // In case you register a payment for a specifi semester that is mroe then the required amount the amount
+        // will be negative from there on out.
+        $this->mockResponses([
+            new Response(201, ['Content-Type' => 'application/json'], '{"access_token":"testtoken"}'),
+            new Response(200, ['Content-Type' => 'application/json'], '{"amount":-21.3,"semesterKey":"2022S"}'),
+        ]);
+        $fee = $this->tuitionFeeApi->getSemesterFee('DEADBEEF', '2022S');
+        $this->assertSame($fee->getAmount(), -21.3);
+        $this->assertSame($fee->getSemesterKey(), '2022S');
+    }
+
     public function testGetSemesterInvalidKey()
     {
         $this->mockResponses([

@@ -9,3 +9,7 @@ services:
   Dbp\Relay\MonoConnectorCampusonlineBundle\Service\HealthCheck:
     autowire: true
     autoconfigure: true
+
+  Dbp\Relay\MonoConnectorCampusonlineBundle\Command\ListTuitionFeesCommand:
+    autowire: true
+    autoconfigure: true

@@ -185,6 +185,14 @@ class TuitionFeeService implements BackendServiceInterface, LoggerAwareInterface
         $obfuscatedId = $payment->getLocalIdentifier();
         $amount = (float) $payment->getAmount();
         $semesterKey = Tools::convertSemesterToSemesterKey($payment->getData());
+
+        // This shouldn't really happen, but if it does, we know something went wrong
+        $openAmount = $api->getSemesterFee($obfuscatedId, $semesterKey)->getAmount();
+        if ($amount > $openAmount) {
+            $this->auditLogger->error('CO: Amount being payed is larger than the owed amount ('.$amount.' > '.$openAmount.'), aborting!', $this->getLoggingContext($payment));
+            throw new \RuntimeException('CO: Amount being payed is larger than the owed amount ('.$amount.' > '.$openAmount.'), aborting!');
+        }
+
         try {
             $api->registerPaymentForSemester($obfuscatedId, $amount, $semesterKey);
         } catch (ApiException $e) {

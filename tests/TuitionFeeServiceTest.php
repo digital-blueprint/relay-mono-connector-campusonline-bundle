@@ -9,6 +9,7 @@ use Dbp\Relay\BasePersonBundle\Service\DummyPersonProvider;
 use Dbp\Relay\CoreBundle\Exception\ApiError;
 use Dbp\Relay\CoreBundle\TestUtils\TestUserSession;
 use Dbp\Relay\MonoBundle\Persistence\PaymentPersistence;
+use Dbp\Relay\MonoBundle\Persistence\PaymentStatus;
 use Dbp\Relay\MonoConnectorCampusonlineBundle\Service\ConfigurationService;
 use Dbp\Relay\MonoConnectorCampusonlineBundle\Service\Tools;
 use Dbp\Relay\MonoConnectorCampusonlineBundle\Service\TuitionFeeService;
@@ -59,6 +60,45 @@ class TuitionFeeServiceTest extends KernelTestCase
         $this->assertSame(Tools::convertSemesterToSemesterKey('49W'), '2049W');
         $this->assertSame(Tools::convertSemesterToSemesterKey('50S'), '1950S');
         $this->assertSame(Tools::convertSemesterToSemesterKey('2050S'), '2050S');
+    }
+
+    public function testNotify()
+    {
+        $paymentPersistence = new PaymentPersistence();
+        $paymentPersistence->setIdentifier('test_payment_persistence');
+        $paymentPersistence->setType('test_payment_type');
+        $paymentPersistence->setData('22S');
+        $paymentPersistence->setAmount('300');
+        $paymentPersistence->setLocalIdentifier('user-id');
+        $paymentPersistence->setPaymentStatus(PaymentStatus::COMPLETED);
+
+        $this->mockResponses([
+            new Response(201, ['Content-Type' => 'application/json'], '{"access_token":"testtoken"}'),
+            new Response(200, ['Content-Type' => 'application/json'], '{"amount":300,"semesterKey":"2022S"}'),
+            new Response(201, ['Content-Type' => 'application/json'], ''),
+        ]);
+
+        $this->assertTrue($this->tuitionFeeService->notify($paymentPersistence));
+    }
+
+    public function testNotifyWrongAmount()
+    {
+        $paymentPersistence = new PaymentPersistence();
+        $paymentPersistence->setIdentifier('test_payment_persistence');
+        $paymentPersistence->setType('test_payment_type');
+        $paymentPersistence->setData('22S');
+        $paymentPersistence->setAmount('301');
+        $paymentPersistence->setLocalIdentifier('user-id');
+        $paymentPersistence->setPaymentStatus(PaymentStatus::COMPLETED);
+
+        $this->mockResponses([
+            new Response(201, ['Content-Type' => 'application/json'], '{"access_token":"testtoken"}'),
+            new Response(200, ['Content-Type' => 'application/json'], '{"amount":300,"semesterKey":"2022S"}'),
+            new Response(201, ['Content-Type' => 'application/json'], ''),
+        ]);
+
+        $this->expectExceptionMessage('Amount being payed is larger');
+        $this->tuitionFeeService->notify($paymentPersistence);
     }
 
     public function testTranslations()

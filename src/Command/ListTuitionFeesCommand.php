@@ -22,6 +22,7 @@ class ListTuitionFeesCommand extends Command
      * @var callable|null
      */
     private $clientHandler;
+    private ?string $token;
 
     public function __construct(TuitionFeeService $tuitionFeeService, ConfigurationService $config)
     {
@@ -40,9 +41,10 @@ class ListTuitionFeesCommand extends Command
         $this->addArgument('obfuscated-id', InputArgument::REQUIRED, 'obfuscated id');
     }
 
-    public function setClientHandler(?callable $handler): void
+    public function setClientHandler(?callable $handler, ?string $token): void
     {
         $this->clientHandler = $handler;
+        $this->token = $token;
     }
 
     protected function execute(InputInterface $input, OutputInterface $output): int
@@ -55,7 +57,7 @@ class ListTuitionFeesCommand extends Command
         }
 
         if ($this->clientHandler !== null) {
-            $this->tuitionFeeService->setClientHandler($this->clientHandler);
+            $this->tuitionFeeService->setClientHandler($this->clientHandler, $this->token);
         }
         $api = $this->tuitionFeeService->getApiByType($paymentType, null);
         $feeList = $api->getAllFees($obfuscatedId);

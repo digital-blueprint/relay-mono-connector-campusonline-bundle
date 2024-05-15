@@ -20,6 +20,7 @@ class TuitionFeeApiTest extends TestCase
     {
         $connection = new Connection('http://localhost', 'nope', 'nope');
         $this->tuitionFeeApi = new TuitionFeeApi($connection);
+        $this->tuitionFeeApi->getConnection()->setToken('bla');
         $this->mockResponses([]);
     }
 
@@ -43,7 +44,6 @@ class TuitionFeeApiTest extends TestCase
         $this->assertSame($version->getVersion(), '1.0.0-SNAPSHOT');
 
         $this->mockResponses([
-            new Response(201, ['Content-Type' => 'application/json'], '{"access_token":"testtoken"}'),
             new Response(200, ['Content-Type' => 'application/json'], '{"name":"tuinx","version":"1.0.0-SNAPSHOT"}'),
         ]);
         $version = $this->tuitionFeeApi->getAuthenticatedVersion();
@@ -54,7 +54,6 @@ class TuitionFeeApiTest extends TestCase
     public function testGetCurrentFee()
     {
         $this->mockResponses([
-            new Response(201, ['Content-Type' => 'application/json'], '{"access_token":"testtoken"}'),
             new Response(200, ['Content-Type' => 'application/json'], '{"amount":-16,"semesterKey":"2022S"}'),
         ]);
         $fee = $this->tuitionFeeApi->getCurrentFee('DEADBEEF');
@@ -66,7 +65,6 @@ class TuitionFeeApiTest extends TestCase
     {
         // This is a real internal error we got. Re-use it to test the error parsing.
         $this->mockResponses([
-            new Response(201, ['Content-Type' => 'application/json'], '{"access_token":"testtoken"}'),
             new Response(500, ['Content-Type' => 'application/json'], '{"detail": "java.lang.IllegalStateException: RESTEASY004575: Input stream was empty, there is no entity - RESTEASY003765: Response is closed.", "status": 500, "title": "Failed parsing response from public API", "type": "at.swgt.rest.client.exception.CoPublicApiWebApplicationException"}'),
         ]);
 
@@ -77,7 +75,6 @@ class TuitionFeeApiTest extends TestCase
     public function testGetCurrentFeeNotFound()
     {
         $this->mockResponses([
-            new Response(201, ['Content-Type' => 'application/json'], '{"access_token":"testtoken"}'),
             new Response(404, ['Content-Type' => 'application/json'], '{"status":404,"title":"Not Found","type":"exception:at.swgt.rest.client.exception.CoPublicApiWebApplicationException"}'),
         ]);
         $this->expectException(ApiException::class);
@@ -87,7 +84,6 @@ class TuitionFeeApiTest extends TestCase
     public function testGetSemesterFee()
     {
         $this->mockResponses([
-            new Response(201, ['Content-Type' => 'application/json'], '{"access_token":"testtoken"}'),
             new Response(200, ['Content-Type' => 'application/json'], '{"amount":0,"semesterKey":"2023S"}'),
         ]);
         $fee = $this->tuitionFeeApi->getSemesterFee('DEADBEEF', '2023S');
@@ -100,7 +96,6 @@ class TuitionFeeApiTest extends TestCase
         // In case you register a payment for a specifi semester that is mroe then the required amount the amount
         // will be negative from there on out.
         $this->mockResponses([
-            new Response(201, ['Content-Type' => 'application/json'], '{"access_token":"testtoken"}'),
             new Response(200, ['Content-Type' => 'application/json'], '{"amount":-21.3,"semesterKey":"2022S"}'),
         ]);
         $fee = $this->tuitionFeeApi->getSemesterFee('DEADBEEF', '2022S');
@@ -111,7 +106,6 @@ class TuitionFeeApiTest extends TestCase
     public function testGetSemesterInvalidKey()
     {
         $this->mockResponses([
-            new Response(201, ['Content-Type' => 'application/json'], '{"access_token":"testtoken"}'),
             new Response(400, ['Content-Type' => 'application/json'], '{"status":400,"title":"semesterKey invalid","type":"exception:javax.ws.rs.BadRequestException"}'),
         ]);
         $this->expectException(ApiException::class);
@@ -121,7 +115,6 @@ class TuitionFeeApiTest extends TestCase
     public function testGetFees()
     {
         $this->mockResponses([
-            new Response(201, ['Content-Type' => 'application/json'], '{"access_token":"testtoken"}'),
             new Response(200, ['Content-Type' => 'application/json'], '{"items":[{"amount":-16,"semesterKey":"1950W"},{"amount":-0.5,"semesterKey":"1951S"},{"amount":0,"semesterKey":"1951W"}],"totalAmount":-16.5}'),
         ]);
 
@@ -134,7 +127,6 @@ class TuitionFeeApiTest extends TestCase
     public function testGetFeesEmpty()
     {
         $this->mockResponses([
-            new Response(201, ['Content-Type' => 'application/json'], '{"access_token":"testtoken"}'),
             new Response(200, ['Content-Type' => 'application/json'], '{"totalAmount":0.0}'),
         ]);
 
@@ -146,7 +138,6 @@ class TuitionFeeApiTest extends TestCase
     public function testGetFeesNotFound()
     {
         $this->mockResponses([
-            new Response(201, ['Content-Type' => 'application/json'], '{"access_token":"testtoken"}'),
             new Response(404, ['Content-Type' => 'application/json'], '{"status":404,"title":"Not Found","type":"exception:at.swgt.rest.client.exception.CoPublicApiWebApplicationException"}'),
         ]);
 
@@ -157,7 +148,6 @@ class TuitionFeeApiTest extends TestCase
     public function testRegisterPaymentForSemester()
     {
         $mockHandler = $this->mockResponses([
-            new Response(201, ['Content-Type' => 'application/json'], '{"access_token":"testtoken"}'),
             new Response(201, ['Content-Type' => 'application/json'], ''),
         ]);
 
@@ -168,7 +158,6 @@ class TuitionFeeApiTest extends TestCase
     public function testRegisterPaymentForSemesterPersonNotFound()
     {
         $this->mockResponses([
-            new Response(201, ['Content-Type' => 'application/json'], '{"access_token":"testtoken"}'),
             new Response(404, ['Content-Type' => 'application/json'], '{"status":404,"title":"Not Found","type":"exception:at.swgt.rest.client.exception.CoPublicApiWebApplicationException"}'),
         ]);
         $this->expectException(ApiException::class);
@@ -178,7 +167,6 @@ class TuitionFeeApiTest extends TestCase
     public function testRegisterPaymentForSemesterInvalidAmount()
     {
         $this->mockResponses([
-            new Response(201, ['Content-Type' => 'application/json'], '{"access_token":"testtoken"}'),
             new Response(400, ['Content-Type' => 'application/json'], '{"status":400,"title":"amount too small","type":"exception:javax.ws.rs.BadRequestException"}'),
         ]);
         $this->expectException(ApiException::class);
@@ -188,7 +176,6 @@ class TuitionFeeApiTest extends TestCase
     public function testRegisterPaymentForCurrentSemester()
     {
         $mockHandler = $this->mockResponses([
-            new Response(201, ['Content-Type' => 'application/json'], '{"access_token":"testtoken"}'),
             new Response(201, ['Content-Type' => 'application/json'], ''),
         ]);
 
@@ -199,7 +186,6 @@ class TuitionFeeApiTest extends TestCase
     public function testRegisterPaymentForCurrentSemesterPersonNotFound()
     {
         $this->mockResponses([
-            new Response(201, ['Content-Type' => 'application/json'], '{"access_token":"testtoken"}'),
             new Response(404, ['Content-Type' => 'application/json'], '{"status":404,"title":"Not Found","type":"exception:at.swgt.rest.client.exception.CoPublicApiWebApplicationException"}'),
         ]);
         $this->expectException(ApiException::class);
@@ -209,7 +195,6 @@ class TuitionFeeApiTest extends TestCase
     public function testRegisterPaymentForCurrentSemesterInvalidAmount()
     {
         $this->mockResponses([
-            new Response(201, ['Content-Type' => 'application/json'], '{"access_token":"testtoken"}'),
             new Response(400, ['Content-Type' => 'application/json'], '{"status":400,"title":"amount too small","type":"exception:javax.ws.rs.BadRequestException"}'),
         ]);
         $this->expectException(ApiException::class);

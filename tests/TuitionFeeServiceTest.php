@@ -48,11 +48,20 @@ class TuitionFeeServiceTest extends KernelTestCase
             new TestUserSession('testuser'), $dummyPersonProvider, $config);
     }
 
+    private function getAuthResponses(): array
+    {
+        return [
+            new Response(200, ['Content-Type' => 'application/json'], '{"authServerUrl":"http://localhost/co/public/sec/auth/realms/CAMPUSonline_SP","clientId":"co-public-rest-api-app-user","frontendUrl":"http://localhost/co/public/app","openApiSource":"default","version":"2.3.0-ef6baff"}'),
+            new Response(200, ['Content-Type' => 'application/json'], '{"token_endpoint":"http://localhost/co/public/sec/auth/realms/CAMPUSonline/protocol/openid-connect/token"}'),
+            new Response(201, ['Content-Type' => 'application/json'], '{"access_token":"testtoken"}'),
+        ];
+    }
+
     private function mockResponses(array $responses)
     {
         $mockHandler = new MockHandler($responses);
         $clientHandler = HandlerStack::create($mockHandler);
-        $this->tuitionFeeService->setClientHandler($clientHandler);
+        $this->tuitionFeeService->setClientHandler($clientHandler, 'bla');
     }
 
     public function testConvertSemesterToSemesterKey()
@@ -74,7 +83,6 @@ class TuitionFeeServiceTest extends KernelTestCase
         $paymentPersistence->setPaymentStatus(PaymentStatus::COMPLETED);
 
         $this->mockResponses([
-            new Response(201, ['Content-Type' => 'application/json'], '{"access_token":"testtoken"}'),
             new Response(200, ['Content-Type' => 'application/json'], '{"amount":300,"semesterKey":"2022S"}'),
             new Response(201, ['Content-Type' => 'application/json'], ''),
         ]);
@@ -93,7 +101,6 @@ class TuitionFeeServiceTest extends KernelTestCase
         $paymentPersistence->setPaymentStatus(PaymentStatus::COMPLETED);
 
         $this->mockResponses([
-            new Response(201, ['Content-Type' => 'application/json'], '{"access_token":"testtoken"}'),
             new Response(200, ['Content-Type' => 'application/json'], '{"amount":300,"semesterKey":"2022S"}'),
             new Response(201, ['Content-Type' => 'application/json'], ''),
         ]);
@@ -120,7 +127,6 @@ class TuitionFeeServiceTest extends KernelTestCase
     public function testUpdateData(): void
     {
         $this->mockResponses([
-            new Response(201, ['Content-Type' => 'application/json'], '{"access_token":"testtoken"}'),
             new Response(200, ['Content-Type' => 'application/json'], '{"amount":300,"semesterKey":"2022S"}'),
         ]);
 
@@ -141,7 +147,6 @@ class TuitionFeeServiceTest extends KernelTestCase
     public function testUpdateDataAmountToSmall(): void
     {
         $this->mockResponses([
-            new Response(201, ['Content-Type' => 'application/json'], '{"access_token":"testtoken"}'),
             new Response(200, ['Content-Type' => 'application/json'], '{"amount":0,"semesterKey":"2022S"}'),
         ]);
 
@@ -191,7 +196,6 @@ class TuitionFeeServiceTest extends KernelTestCase
     public function testCheckConnection()
     {
         $this->mockResponses([
-            new Response(201, ['Content-Type' => 'application/json'], '{"access_token":"testtoken"}'),
             new Response(200, ['Content-Type' => 'application/json'], '{"name":"tuinx","version":"1.0.0-SNAPSHOT"}'),
         ]);
         $this->tuitionFeeService->checkConnection();
@@ -201,7 +205,6 @@ class TuitionFeeServiceTest extends KernelTestCase
     public function testCheckBackendConnection()
     {
         $this->mockResponses([
-            new Response(201, ['Content-Type' => 'application/json'], '{"access_token":"testtoken"}'),
             new Response(404, ['Content-Type' => 'application/json'], '{"status":404,"title":"Not Found","type":"exception:at.swgt.rest.client.exception.CoPublicApiWebApplicationException"}'),
         ]);
         $this->tuitionFeeService->checkBackendConnection();

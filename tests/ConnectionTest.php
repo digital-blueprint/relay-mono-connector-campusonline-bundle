@@ -32,6 +32,8 @@ class ConnectionTest extends TestCase
     public function testFetchToken()
     {
         $this->mockResponses([
+            new Response(200, ['Content-Type' => 'application/json'], '{"authServerUrl":"http://localhost/co/public/sec/auth/realms/CAMPUSonline_SP","clientId":"co-public-rest-api-app-user","frontendUrl":"http://localhost/co/public/app","openApiSource":"default","version":"2.3.0-ef6baff"}'),
+            new Response(200, ['Content-Type' => 'application/json'], '{"token_endpoint":"http://localhost/co/public/sec/auth/realms/CAMPUSonline/protocol/openid-connect/token"}'),
             new Response(200, ['Content-Type' => 'application/json'], '{"access_token": "foobar"}'),
         ]);
         $client = $this->conn->getClient();

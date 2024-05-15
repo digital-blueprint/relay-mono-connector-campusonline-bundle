@@ -104,7 +104,27 @@ class Connection implements LoggerAwareInterface
         $client = new Client($client_options);
 
         try {
-            $response = $client->post('co/public/sec/auth/realms/CAMPUSonline/protocol/openid-connect/token', [
+            $response = $client->get('co/public/api/environment');
+        } catch (RequestException $e) {
+            throw new ApiException($e->getMessage());
+        }
+        $data = $response->getBody()->getContents();
+        $environment = json_decode($data, true, flags: JSON_THROW_ON_ERROR);
+        $authServerUrl = $environment['authServerUrl'] ?? null;
+        if ($authServerUrl === null) {
+            throw new ApiException('authServerUrl missing');
+        }
+
+        $response = $client->get($authServerUrl.'/.well-known/openid-configuration');
+        $data = $response->getBody()->getContents();
+        $openIdConfig = json_decode($data, true, flags: JSON_THROW_ON_ERROR);
+        $tokenEndpoint = $openIdConfig['token_endpoint'] ?? null;
+        if ($tokenEndpoint === null) {
+            throw new ApiException('token_endpoint missing');
+        }
+
+        try {
+            $response = $client->post($tokenEndpoint, [
                 'form_params' => [
                     'client_id' => $this->clientId,
                     'client_secret' => $this->clientSecret,

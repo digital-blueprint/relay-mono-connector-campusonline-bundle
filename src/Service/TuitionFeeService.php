@@ -38,6 +38,7 @@ class TuitionFeeService implements BackendServiceInterface, LoggerAwareInterface
      */
     private $clientHandler;
     private ConfigurationService $config;
+    private ?string $token;
 
     public function __construct(
         TranslatorInterface $translator,
@@ -51,6 +52,7 @@ class TuitionFeeService implements BackendServiceInterface, LoggerAwareInterface
         $this->auditLogger = new NullLogger();
         $this->personProvider = $personProvider;
         $this->config = $config;
+        $this->token = null;
     }
 
     public function setAuditLogger(LoggerInterface $auditLogger): void
@@ -61,9 +63,10 @@ class TuitionFeeService implements BackendServiceInterface, LoggerAwareInterface
     /**
      * For unit testing only.
      */
-    public function setClientHandler(?callable $handler): void
+    public function setClientHandler(?callable $handler, ?string $token): void
     {
         $this->clientHandler = $handler;
+        $this->token = $token;
     }
 
     public function checkConnectionNoAuth()
@@ -225,6 +228,11 @@ class TuitionFeeService implements BackendServiceInterface, LoggerAwareInterface
             $clientId,
             $clientSecret
         );
+        $connection->setLogger($this->logger);
+
+        if ($this->token !== null) {
+            $connection->setToken($this->token);
+        }
 
         if ($this->clientHandler !== null) {
             $connection->setClientHandler($this->clientHandler);

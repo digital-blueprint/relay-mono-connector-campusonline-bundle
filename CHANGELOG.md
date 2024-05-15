@@ -1,5 +1,12 @@
 # Changelog
 
+## v0.2.4
+
+* Fix compatibility with the latest CAMPUSonline release, resulting in authentication
+  errors when trying to fetch tuition fees. Caused by the default Keycloak realm naming
+  being changed in the latest CAMPUSonline release. This release works with the old
+  and new realm naming.
+
 ## v0.2.3
 
 * Add CLI command "dbp:relay:mono-connector-campusonline:list-tuition-fee" to list the tuition

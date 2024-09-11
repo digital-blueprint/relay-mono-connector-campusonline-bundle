@@ -1,5 +1,10 @@
 # Changelog
 
+## v0.2.5
+
+* Remove reference to UserSession to get the current user identifier and use
+PersonProvider::getCurrentPerson directly instead
+
 ## v0.2.4
 
 * Fix compatibility with the latest CAMPUSonline release, resulting in authentication

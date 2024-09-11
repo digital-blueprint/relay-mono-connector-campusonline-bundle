@@ -4,10 +4,8 @@ declare(strict_types=1);
 
 namespace Dbp\Relay\MonoConnectorCampusonlineBundle\Tests;
 
-use Dbp\Relay\BasePersonBundle\Entity\Person;
 use Dbp\Relay\BasePersonBundle\Service\DummyPersonProvider;
 use Dbp\Relay\CoreBundle\Exception\ApiError;
-use Dbp\Relay\CoreBundle\TestUtils\TestUserSession;
 use Dbp\Relay\MonoBundle\ApiPlatform\Payment;
 use Dbp\Relay\MonoBundle\Persistence\PaymentPersistence;
 use Dbp\Relay\MonoBundle\Persistence\PaymentStatus;
@@ -25,14 +23,13 @@ class TuitionFeeServiceTest extends KernelTestCase
 {
     private TuitionFeeService $tuitionFeeService;
 
+    private ?DummyPersonProvider $personProvider = null;
+
     protected function setUp(): void
     {
-        $dummyPersonProvider = new DummyPersonProvider();
-        $person = new Person();
-        $person->setIdentifier('testuser');
-        $person->setGivenName('John');
-        $person->setFamilyName('Doe');
-        $dummyPersonProvider->setCurrentPerson($person);
+        $this->personProvider = new DummyPersonProvider();
+        $this->personProvider->addPerson('testuser', 'John', 'Doe', ['title' => 'Dr.']);
+        $this->personProvider->setCurrentPersonIdentifier('testuser');
         $config = new ConfigurationService();
         $config->setConfig([
             'payment_types' => [
@@ -44,8 +41,7 @@ class TuitionFeeServiceTest extends KernelTestCase
             ],
         ]);
         $translator = self::getContainer()->get(TranslatorInterface::class);
-        $this->tuitionFeeService = new TuitionFeeService($translator,
-            new TestUserSession('testuser'), $dummyPersonProvider, $config);
+        $this->tuitionFeeService = new TuitionFeeService($translator, $this->personProvider, $config);
     }
 
     private function getAuthResponses(): array
@@ -141,7 +137,28 @@ class TuitionFeeServiceTest extends KernelTestCase
         $this->assertSame($paymentPersistence->getCurrency(), 'EUR');
         $this->assertSame($paymentPersistence->getGivenName(), 'John');
         $this->assertSame($paymentPersistence->getFamilyName(), 'Doe');
-        $this->assertSame($paymentPersistence->getHonorificSuffix(), 'title');
+        $this->assertSame($paymentPersistence->getHonorificSuffix(), 'Dr.');
+    }
+
+    public function testUpdateDataNoCurrentPerson(): void
+    {
+        $this->mockResponses([
+            new Response(200, ['Content-Type' => 'application/json'], '{"amount":300,"semesterKey":"2022S"}'),
+        ]);
+
+        $paymentPersistence = new PaymentPersistence();
+        $paymentPersistence->setIdentifier('test_payment_persistence');
+        $paymentPersistence->setType('test_payment_type');
+        $paymentPersistence->setData('22S');
+
+        $this->personProvider->setCurrentPersonIdentifier(null);
+
+        try {
+            $this->tuitionFeeService->updateData($paymentPersistence);
+            $this->fail('Expected an ApiError');
+        } catch (ApiError $apiError) {
+            $this->assertSame($apiError->getStatusCode(), HttpResponse::HTTP_FORBIDDEN);
+        }
     }
 
     public function testUpdateDataAmountToSmall(): void

@@ -5,7 +5,6 @@ declare(strict_types=1);
 namespace Dbp\Relay\MonoConnectorCampusonlineBundle\Service;
 
 use Dbp\Relay\BasePersonBundle\API\PersonProviderInterface;
-use Dbp\Relay\CoreBundle\API\UserSessionInterface;
 use Dbp\Relay\CoreBundle\Exception\ApiError;
 use Dbp\Relay\CoreBundle\Rest\Options;
 use Dbp\Relay\MonoBundle\ApiPlatform\Payment;
@@ -28,7 +27,6 @@ class TuitionFeeService implements BackendServiceInterface, LoggerAwareInterface
 
     public const PERSON_TITLE_LOCAL_DATA_ATTRIBUTE = 'title';
 
-    private UserSessionInterface $userSession;
     private TranslatorInterface $translator;
     private LoggerInterface $auditLogger;
     private PersonProviderInterface $personProvider;
@@ -42,12 +40,10 @@ class TuitionFeeService implements BackendServiceInterface, LoggerAwareInterface
 
     public function __construct(
         TranslatorInterface $translator,
-        UserSessionInterface $userSession,
         PersonProviderInterface $personProvider,
         ConfigurationService $config,
     ) {
         $this->translator = $translator;
-        $this->userSession = $userSession;
         $this->logger = new NullLogger();
         $this->auditLogger = new NullLogger();
         $this->personProvider = $personProvider;
@@ -113,19 +109,18 @@ class TuitionFeeService implements BackendServiceInterface, LoggerAwareInterface
             || $payment->getDataUpdatedAt() <= $updateExpiration
         ) {
             $this->auditLogger->debug('CO: Updating the payment data', $this->getLoggingContext($payment));
-            $userIdentifier = $this->userSession->getUserIdentifier();
-            if ($userIdentifier === null) {
-                throw new ApiError(Response::HTTP_UNAUTHORIZED, 'No user identifier!');
-            }
 
             $personProviderOptions = [];
-            $person = $this->personProvider->getPerson($userIdentifier,
+            $currentPerson = $this->personProvider->getCurrentPerson(
                 Options::requestLocalDataAttributes($personProviderOptions, [self::PERSON_TITLE_LOCAL_DATA_ATTRIBUTE]));
+            if ($currentPerson === null) {
+                throw new ApiError(Response::HTTP_FORBIDDEN, 'Forbidden');
+            }
 
-            $payment->setLocalIdentifier($person->getIdentifier());
-            $payment->setGivenName($person->getGivenName());
-            $payment->setFamilyName($person->getFamilyName());
-            $payment->setHonorificSuffix($person->getLocalDataValue(self::PERSON_TITLE_LOCAL_DATA_ATTRIBUTE));
+            $payment->setLocalIdentifier($currentPerson->getIdentifier());
+            $payment->setGivenName($currentPerson->getGivenName());
+            $payment->setFamilyName($currentPerson->getFamilyName());
+            $payment->setHonorificSuffix($currentPerson->getLocalDataValue(self::PERSON_TITLE_LOCAL_DATA_ATTRIBUTE));
 
             $api = $this->getApiByType($payment->getType(), $payment);
             $obfuscatedId = $payment->getLocalIdentifier();

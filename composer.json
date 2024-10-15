@@ -6,9 +6,9 @@
     "require": {
         "php": ">=8.1",
         "ext-json": "*",
-        "api-platform/core": "^2.7.11 || ^3.2",
+        "api-platform/core": "^3.2",
         "dbp/relay-base-person-bundle": "^0.2.33",
-        "dbp/relay-core-bundle": "^0.1.148",
+        "dbp/relay-core-bundle": "^0.1.186",
         "dbp/relay-mono-bundle": "^0.4.10",
         "guzzlehttp/guzzle": "^7.4",
         "league/uri": "^6.5 || ^7.4",

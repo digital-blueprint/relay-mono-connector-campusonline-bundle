@@ -1,5 +1,9 @@
 # Changelog
 
+## Unreleased
+
+* Drop support for Symfony 5
+
 ## v0.2.5
 
 * Remove reference to UserSession to get the current user identifier and use

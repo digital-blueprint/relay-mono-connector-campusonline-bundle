@@ -113,10 +113,10 @@ class TuitionFeeServiceTest extends KernelTestCase
         /** @var TranslatorInterface $t */
         $t = $container->get('translator');
         $result = $t->trans(
-            'dbp_relay_mono_connector_campusonline.tuition_fee.alternate_name', ['familyName' => 'foo'], null, 'en');
+            'tuition_fee.payment_title', ['familyName' => 'foo'], 'dbp_relay_mono_connector_campusonline', 'en');
         $this->assertStringContainsString('foo', $result);
         $result = $t->trans(
-            'dbp_relay_mono_connector_campusonline.tuition_fee.alternate_name_suffix', ['familyName' => 'foo'], null, 'en');
+            'tuition_fee.payment_title_with_suffix', ['familyName' => 'foo'], 'dbp_relay_mono_connector_campusonline', 'en');
         $this->assertStringContainsString('foo', $result);
     }
 

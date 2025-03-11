@@ -160,9 +160,9 @@ class TuitionFeeService implements BackendServiceInterface, LoggerAwareInterface
             'honorificSuffix' => $payment->getHonorificSuffix(),
         ];
         if ($parameters['honorificSuffix'] !== null) {
-            $alternateName = $this->translator->trans('dbp_relay_mono_connector_campusonline.tuition_fee.alternate_name_suffix', $parameters);
+            $alternateName = $this->translator->trans('tuition_fee.payment_title_with_suffix', $parameters, 'dbp_relay_mono_connector_campusonline');
         } else {
-            $alternateName = $this->translator->trans('dbp_relay_mono_connector_campusonline.tuition_fee.alternate_name', $parameters);
+            $alternateName = $this->translator->trans('tuition_fee.payment_title', $parameters, 'dbp_relay_mono_connector_campusonline');
         }
         $payment->setAlternateName($alternateName);
 

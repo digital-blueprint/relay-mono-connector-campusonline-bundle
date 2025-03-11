@@ -1,0 +1,3 @@
+tuition_fee:
+  payment_title: "Tuition fee ({semesterKey}) for {familyName}, {givenName}"
+  payment_title_with_suffix: "Tuition fee ({semesterKey}) for {familyName}, {givenName}, {honorificSuffix}"

@@ -1,0 +1,3 @@
+tuition_fee:
+  payment_title: "Studienbeitrag ({semesterKey}) für {familyName}, {givenName}"
+  payment_title_with_suffix: "Studienbeitrag ({semesterKey}) für {familyName}, {givenName}, {honorificSuffix}"

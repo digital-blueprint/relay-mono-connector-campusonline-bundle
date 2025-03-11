@@ -33,7 +33,7 @@ class TuitionFeeServiceTest extends KernelTestCase
         $config = new ConfigurationService();
         $config->setConfig([
             'payment_types' => [
-                'test_payment_type' => [
+                'co_test_payment_type' => [
                     'api_url' => 'http://localhost',
                     'client_id' => 'nope',
                     'client_secret' => 'nope',
@@ -83,7 +83,7 @@ class TuitionFeeServiceTest extends KernelTestCase
             new Response(201, ['Content-Type' => 'application/json'], ''),
         ]);
 
-        $this->assertTrue($this->tuitionFeeService->notify($paymentPersistence));
+        $this->assertTrue($this->tuitionFeeService->notify('co_test_payment_type', $paymentPersistence));
     }
 
     public function testNotifyWrongAmount()
@@ -102,7 +102,7 @@ class TuitionFeeServiceTest extends KernelTestCase
         ]);
 
         $this->expectExceptionMessage('Amount being payed is larger');
-        $this->tuitionFeeService->notify($paymentPersistence);
+        $this->tuitionFeeService->notify('co_test_payment_type', $paymentPersistence);
     }
 
     public function testTranslations()
@@ -131,7 +131,7 @@ class TuitionFeeServiceTest extends KernelTestCase
         $paymentPersistence->setType('test_payment_type');
         $paymentPersistence->setData('22S');
 
-        $this->tuitionFeeService->updateData($paymentPersistence);
+        $this->tuitionFeeService->updateData('co_test_payment_type', $paymentPersistence);
 
         $this->assertSame($paymentPersistence->getAmount(), '300');
         $this->assertSame($paymentPersistence->getCurrency(), 'EUR');
@@ -154,7 +154,7 @@ class TuitionFeeServiceTest extends KernelTestCase
         $this->personProvider->setCurrentPersonIdentifier(null);
 
         try {
-            $this->tuitionFeeService->updateData($paymentPersistence);
+            $this->tuitionFeeService->updateData('co_test_payment_type', $paymentPersistence);
             $this->fail('Expected an ApiError');
         } catch (ApiError $apiError) {
             $this->assertSame($apiError->getStatusCode(), HttpResponse::HTTP_FORBIDDEN);
@@ -173,7 +173,7 @@ class TuitionFeeServiceTest extends KernelTestCase
         $paymentPersistence->setData('22S');
 
         try {
-            $this->tuitionFeeService->updateData($paymentPersistence);
+            $this->tuitionFeeService->updateData('co_test_payment_type', $paymentPersistence);
             $this->fail('Expected an 400 ApiError');
         } catch (ApiError $apiError) {
             $this->assertSame($apiError->getStatusCode(), HttpResponse::HTTP_BAD_REQUEST);
@@ -188,17 +188,17 @@ class TuitionFeeServiceTest extends KernelTestCase
         $payment = new Payment();
         $payment->setFamilyName('family');
         $payment->setGivenName('given');
-        $this->assertTrue($this->tuitionFeeService->updateEntity($paymentPersistence, $payment));
+        $this->assertTrue($this->tuitionFeeService->updateEntity('co_test_payment_type', $paymentPersistence, $payment));
         $this->assertSame('Tuition fee (2022S) for family, given', $payment->getAlternateName());
         $payment->setHonorificSuffix('suffix');
-        $this->assertTrue($this->tuitionFeeService->updateEntity($paymentPersistence, $payment));
+        $this->assertTrue($this->tuitionFeeService->updateEntity('co_test_payment_type', $paymentPersistence, $payment));
         $this->assertSame('Tuition fee (2022S) for family, given, suffix', $payment->getAlternateName());
     }
 
     public function testCleanup()
     {
         $paymentPersistence = new PaymentPersistence();
-        $this->assertTrue($this->tuitionFeeService->cleanup($paymentPersistence));
+        $this->assertTrue($this->tuitionFeeService->cleanup('co_test_payment_type', $paymentPersistence));
     }
 
     public function testCheckConnectionNoAuth()

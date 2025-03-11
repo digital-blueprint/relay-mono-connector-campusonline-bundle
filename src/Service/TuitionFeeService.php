@@ -98,7 +98,7 @@ class TuitionFeeService implements BackendServiceInterface, LoggerAwareInterface
         }
     }
 
-    public function updateData(PaymentPersistence $paymentPersistence): bool
+    public function updateData(string $paymentBackendType, PaymentPersistence $paymentPersistence): bool
     {
         $payment = $paymentPersistence;
         $changed = false;
@@ -122,7 +122,7 @@ class TuitionFeeService implements BackendServiceInterface, LoggerAwareInterface
             $payment->setFamilyName($currentPerson->getFamilyName());
             $payment->setHonorificSuffix($currentPerson->getLocalDataValue(self::PERSON_TITLE_LOCAL_DATA_ATTRIBUTE));
 
-            $api = $this->getApiByType($payment->getType(), $payment);
+            $api = $this->getApiByType($paymentBackendType, $payment);
             $obfuscatedId = $payment->getLocalIdentifier();
             $semesterKey = Tools::convertSemesterToSemesterKey($payment->getData());
 
@@ -150,7 +150,7 @@ class TuitionFeeService implements BackendServiceInterface, LoggerAwareInterface
         return $changed;
     }
 
-    public function updateEntity(PaymentPersistence $paymentPersistence, Payment $payment): bool
+    public function updateEntity(string $paymentBackendType, PaymentPersistence $paymentPersistence, Payment $payment): bool
     {
         $semesterKey = Tools::convertSemesterToSemesterKey($paymentPersistence->getData());
         $parameters = [
@@ -169,7 +169,7 @@ class TuitionFeeService implements BackendServiceInterface, LoggerAwareInterface
         return true;
     }
 
-    public function notify(PaymentPersistence $paymentPersistence): bool
+    public function notify(string $paymentBackendType, PaymentPersistence $paymentPersistence): bool
     {
         $payment = $paymentPersistence;
         // This is just a sanity check, we should never be called in another state
@@ -178,8 +178,7 @@ class TuitionFeeService implements BackendServiceInterface, LoggerAwareInterface
         }
 
         $this->auditLogger->debug('CO: Registering semester payment', $this->getLoggingContext($payment));
-        $type = $payment->getType();
-        $api = $this->getApiByType($type, $payment);
+        $api = $this->getApiByType($paymentBackendType, $payment);
         $obfuscatedId = $payment->getLocalIdentifier();
         $amount = (float) $payment->getAmount();
         $semesterKey = Tools::convertSemesterToSemesterKey($payment->getData());
@@ -201,7 +200,7 @@ class TuitionFeeService implements BackendServiceInterface, LoggerAwareInterface
         return true;
     }
 
-    public function cleanup(PaymentPersistence $paymentPersistence): bool
+    public function cleanup(string $paymentBackendType, PaymentPersistence $paymentPersistence): bool
     {
         return true;
     }
@@ -241,5 +240,10 @@ class TuitionFeeService implements BackendServiceInterface, LoggerAwareInterface
         }
 
         return $api;
+    }
+
+    public function getPaymentBackendTypes(): array
+    {
+        return $this->config->getTypes();
     }
 }

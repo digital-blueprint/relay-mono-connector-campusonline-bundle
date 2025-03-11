@@ -58,23 +58,10 @@ class Kernel extends BaseKernel
 
         $container->extension('dbp_relay_mono', [
             'database_url' => 'mysql://dummy:dummy@dummy?serverVersion=mariadb-10.3.30',
-            'cleanup' => [
-                [
-                    'payment_status' => 'ada',
-                    'timeout_before' => '123',
-                ],
-            ],
-            'payment_session_timeout' => 1234,
             'payment_types' => [
-                [
-                    'service' => 'bla',
-                    'payment_contracts' => [
-                        [
-                            'service' => 'bla',
-                            'payment_methods' => [
-                                [],
-                            ],
-                        ],
+                'quux' => [
+                    'backend_type' => 'bla',
+                    'payment_methods' => [
                     ],
                 ],
             ],

@@ -2,7 +2,11 @@
 
 ## Unreleased
 
+## v0.2.6
+
+* Port to mono-bundle v0.5
 * Drop support for Symfony 5
+* Drop support for Psalm
 
 ## v0.2.5
 

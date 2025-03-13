@@ -65,7 +65,7 @@ class TuitionFeeService implements BackendServiceInterface, LoggerAwareInterface
         $this->token = $token;
     }
 
-    public function checkConnectionNoAuth()
+    public function checkConnectionNoAuth(): void
     {
         foreach ($this->config->getTypes() as $type) {
             $api = $this->getApiByType($type, null);
@@ -73,7 +73,7 @@ class TuitionFeeService implements BackendServiceInterface, LoggerAwareInterface
         }
     }
 
-    public function checkConnection()
+    public function checkConnection(): void
     {
         foreach ($this->config->getTypes() as $type) {
             $api = $this->getApiByType($type, null);
@@ -81,7 +81,7 @@ class TuitionFeeService implements BackendServiceInterface, LoggerAwareInterface
         }
     }
 
-    public function checkBackendConnection()
+    public function checkBackendConnection(): void
     {
         // In case the API is working, but the connection to the CO backend
         // is broken, then getAuthenticatedVersion() will succeed, but everything else
@@ -205,6 +205,9 @@ class TuitionFeeService implements BackendServiceInterface, LoggerAwareInterface
         return true;
     }
 
+    /**
+     * @return mixed[]
+     */
     private function getLoggingContext(PaymentPersistence $payment): array
     {
         return ['relay-mono-payment-id' => $payment->getIdentifier()];

@@ -6,8 +6,14 @@ namespace Dbp\Relay\MonoConnectorCampusonlineBundle\Service;
 
 class ConfigurationService
 {
+    /**
+     * @var mixed[]
+     */
     private array $config = [];
 
+    /**
+     * @param mixed[] $config
+     */
     public function setConfig(array $config): void
     {
         $this->config = $config;

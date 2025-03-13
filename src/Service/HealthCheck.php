@@ -57,7 +57,7 @@ class HealthCheck implements CheckInterface
     /**
      * @throws \Throwable
      */
-    public function checkPersonProvider()
+    public function checkPersonProvider(): void
     {
         try {
             $personProviderOptions = [];

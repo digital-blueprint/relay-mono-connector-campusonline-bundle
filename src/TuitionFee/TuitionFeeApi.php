@@ -23,7 +23,7 @@ class TuitionFeeApi implements LoggerAwareInterface
     private $auditLogger;
 
     /**
-     * @var array
+     * @var mixed[]
      */
     private $loggingContext;
 
@@ -40,11 +40,19 @@ class TuitionFeeApi implements LoggerAwareInterface
         $this->auditLogger = $auditLogger;
     }
 
+    /**
+     * @param mixed[] $loggingContext
+     */
     public function setLoggingContext(array $loggingContext): void
     {
         $this->loggingContext = $loggingContext;
     }
 
+    /**
+     * @param mixed[] $context
+     *
+     * @return mixed[]
+     */
     private function withLoggingContext(array $context = []): array
     {
         return array_merge($this->loggingContext, $context);

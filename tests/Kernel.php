@@ -68,7 +68,7 @@ class Kernel extends BaseKernel
         ]);
 
         $container->extension('dbp_relay_mono_connector_campusonline', [
-            'payment_types' => [
+            'tuition_fees' => [
                 'foobar' => [
                     'api_url' => '',
                     'client_id' => '',

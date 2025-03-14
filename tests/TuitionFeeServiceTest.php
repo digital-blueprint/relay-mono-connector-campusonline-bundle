@@ -32,7 +32,7 @@ class TuitionFeeServiceTest extends KernelTestCase
         $this->personProvider->setCurrentPersonIdentifier('testuser');
         $config = new ConfigurationService();
         $config->setConfig([
-            'payment_types' => [
+            'tuition_fees' => [
                 'co_test_payment_type' => [
                     'api_url' => 'http://localhost',
                     'client_id' => 'nope',

@@ -24,16 +24,13 @@ class ConfigurationService
      */
     public function getTypes(): array
     {
-        return array_keys($this->config['payment_types']);
+        return array_keys($this->config['tuition_fees']);
     }
 
-    /**
-     * @return array<string,string>
-     */
-    public function getPaymentTypeConfig(string $type): array
+    public function getTuitionFeeConfig(string $type): TuitionFeeConfig
     {
-        if (array_key_exists($type, $this->config['payment_types'])) {
-            return $this->config['payment_types'][$type];
+        if (array_key_exists($type, $this->config['tuition_fees'])) {
+            return new TuitionFeeConfig($this->config['tuition_fees'][$type]);
         } else {
             throw new \RuntimeException('Unknown payment type: '.$type);
         }

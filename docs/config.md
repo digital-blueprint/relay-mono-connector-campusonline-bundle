@@ -6,26 +6,47 @@ Created via `./bin/console config:dump-reference dbp_relay_mono_connector_campus
 
 ```yaml
 dbp_relay_mono_connector_campusonline:
-    payment_types:        # Required
-        # Prototype
-        -
-            api_url:              ~ # Required
-            client_id:            ~ # Required
-            client_secret:        ~ # Required
+  # Zero or more tuition fee connections. The "backend_type" can be referenced in the main "mono" config.
+  tuition_fees:
+    # Prototype
+    backend_type:
+      # The base API URL for a CAMPUSonline instance
+      api_url:              ~ # Required, Example: 'https://online.mycampus.org/campus_online'
+      # The OAuth2 client ID. The client needs to have access to the "tuinx" API.
+      client_id:            ~ # Required, Example: my-client
+      # The OAuth2 client secret
+      client_secret:        ~ # Required, Example: my-secret
 ```
 
 Example configuration:
 
 ```yaml
 dbp_relay_mono_connector_campusonline:
-  payment_types:
-    tuition_fee:
+  tuition_fees:
+    tuition_fee_co:
       api_url: '%env(resolve:MONO_CONNECTOR_CAMPUSONLINE_API_URL)%'
       client_id: '%env(MONO_CONNECTOR_CAMPUSONLINE_CLIENT_ID)%'
       client_secret: '%env(MONO_CONNECTOR_CAMPUSONLINE_CLIENT_SECRET)%'
 ```
 
-## Translations:
+## CLI Commands
+
+For debugging purposes there exists a command for inspecting the tuition fee status for students:
+
+```console
+$ ./bin/console dbp:relay:mono-connector-campusonline:list-tuition-fees --help
+Description:
+  List tuition fees for a student
+
+Usage:
+  dbp:relay:mono-connector-campusonline:list-tuition-fees <type> <obfuscated-id>
+
+Arguments:
+  type                  type
+  obfuscated-id         obfuscated id
+```
+
+## Translations
 
 For the tuition fee there exist two translatable strings for the payment title:
 

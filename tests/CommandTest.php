@@ -32,7 +32,7 @@ class CommandTest extends KernelTestCase
         $clientHandler = HandlerStack::create($mockHandler);
         $command->setClientHandler($clientHandler, 'bla');
 
-        $res = $commandTester->execute(['payment-type' => 'foobar', 'obfuscated-id' => 'user-id']);
+        $res = $commandTester->execute(['type' => 'foobar', 'obfuscated-id' => 'user-id']);
         $this->assertSame(0, $res);
     }
 }

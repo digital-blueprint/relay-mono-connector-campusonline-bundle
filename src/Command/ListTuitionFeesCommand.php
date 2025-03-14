@@ -37,7 +37,7 @@ class ListTuitionFeesCommand extends Command
     {
         $this->setName('dbp:relay:mono-connector-campusonline:list-tuition-fees');
         $this->setDescription('List tuition fees for a student');
-        $this->addArgument('payment-type', InputArgument::REQUIRED, 'payment type');
+        $this->addArgument('type', InputArgument::REQUIRED, 'type');
         $this->addArgument('obfuscated-id', InputArgument::REQUIRED, 'obfuscated id');
     }
 
@@ -49,17 +49,17 @@ class ListTuitionFeesCommand extends Command
 
     protected function execute(InputInterface $input, OutputInterface $output): int
     {
-        $paymentType = $input->getArgument('payment-type');
+        $type = $input->getArgument('type');
         $obfuscatedId = $input->getArgument('obfuscated-id');
         $types = $this->config->getTypes();
-        if (!in_array($paymentType, $types, true)) {
-            throw new \RuntimeException('Unknown payment type, must be one of: '.implode(', ', $types));
+        if (!in_array($type, $types, true)) {
+            throw new \RuntimeException('Unknown type, must be one of: '.implode(', ', $types));
         }
 
         if ($this->clientHandler !== null) {
             $this->tuitionFeeService->setClientHandler($this->clientHandler, $this->token);
         }
-        $api = $this->tuitionFeeService->getApiByType($paymentType, null);
+        $api = $this->tuitionFeeService->getApiByType($type, null);
         $feeList = $api->getAllFees($obfuscatedId);
         $currentFee = $api->getCurrentFee($obfuscatedId);
         $table = new Table($output);

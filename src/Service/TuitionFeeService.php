@@ -215,15 +215,11 @@ class TuitionFeeService implements BackendServiceInterface, LoggerAwareInterface
 
     public function getApiByType(string $type, ?PaymentPersistence $payment): TuitionFeeApi
     {
-        $config = $this->config->getPaymentTypeConfig($type);
-        $baseUrl = $config['api_url'] ?? '';
-        $clientId = $config['client_id'] ?? '';
-        $clientSecret = $config['client_secret'] ?? '';
-
+        $config = $this->config->getTuitionFeeConfig($type);
         $connection = new Connection(
-            $baseUrl,
-            $clientId,
-            $clientSecret
+            $config->getApiUrl(),
+            $config->getClientId(),
+            $config->getClientSecret()
         );
         $connection->setLogger($this->logger);
 

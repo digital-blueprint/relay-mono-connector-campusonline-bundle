@@ -2,6 +2,10 @@
 
 ## Unreleased
 
+## v0.3.0
+
+* breaking config changes: Renamed `payment_types` to `tuition_fees`
+
 ## v0.2.6
 
 * Port to mono-bundle v0.5

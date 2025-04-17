@@ -2,6 +2,11 @@
 
 ## Unreleased
 
+## v0.3.1
+
+* Drop support for PHP 8.1
+* Remove dependency on api-platform
+
 ## v0.3.0
 
 * breaking config changes: Renamed `payment_types` to `tuition_fees`

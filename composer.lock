@@ -395,16 +395,16 @@
         },
         {
             "name": "dbp/relay-mono-bundle",
-            "version": "v0.5.2",
+            "version": "v0.5.4",
             "source": {
                 "type": "git",
                 "url": "https://github.com/digital-blueprint/relay-mono-bundle.git",
-                "reference": "ba49a601755208b7ae099780ecb92dbe177af3b2"
+                "reference": "be766a8d9280e743e312e4c0fd60dd455651150d"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/digital-blueprint/relay-mono-bundle/zipball/ba49a601755208b7ae099780ecb92dbe177af3b2",
-                "reference": "ba49a601755208b7ae099780ecb92dbe177af3b2",
+                "url": "https://api.github.com/repos/digital-blueprint/relay-mono-bundle/zipball/be766a8d9280e743e312e4c0fd60dd455651150d",
+                "reference": "be766a8d9280e743e312e4c0fd60dd455651150d",
                 "shasum": ""
             },
             "require": {
@@ -438,13 +438,14 @@
                 "phpstan/phpstan": "^2.0.0",
                 "phpstan/phpstan-phpunit": "^2.0.0",
                 "phpstan/phpstan-symfony": "^2.0.0",
-                "phpunit/phpunit": "^10.1",
+                "phpunit/phpunit": "^11.1",
                 "symfony/browser-kit": "^6.4",
                 "symfony/error-handler": "^6.4",
                 "symfony/http-client": "^6.4",
                 "symfony/monolog-bridge": "^6.4",
                 "symfony/monolog-bundle": "^3.10",
-                "symfony/phpunit-bridge": "^7.0"
+                "symfony/phpunit-bridge": "^7.0",
+                "symfony/runtime": "^6.4"
             },
             "type": "symfony-bundle",
             "autoload": {
@@ -459,9 +460,9 @@
             "description": "A payment bundle for the Relay API gateway",
             "support": {
                 "issues": "https://github.com/digital-blueprint/relay-mono-bundle/issues",
-                "source": "https://github.com/digital-blueprint/relay-mono-bundle/tree/v0.5.2"
+                "source": "https://github.com/digital-blueprint/relay-mono-bundle/tree/v0.5.4"
             },
-            "time": "2025-08-12T11:54:44+00:00"
+            "time": "2025-10-23T14:01:36+00:00"
         },
         {
             "name": "doctrine/collections",

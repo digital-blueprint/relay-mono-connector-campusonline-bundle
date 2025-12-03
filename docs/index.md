@@ -43,7 +43,6 @@ composer require dbp/relay-mono-connector-campusonline-bundle
 ## Installation Requirements
 
 * CAMPUSonline
-* Access to the CAMPUSonline tuition fee API: https://gitlab.campusonline.community/community/tuinx
 
 ## Documentation
 

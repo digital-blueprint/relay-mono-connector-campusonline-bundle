@@ -2,6 +2,10 @@
 
 ## Unreleased
 
+## v0.3.2
+
+* Add support for Symfony 7
+
 ## v0.3.1
 
 * Drop support for PHP 8.1

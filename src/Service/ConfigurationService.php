@@ -31,8 +31,7 @@ class ConfigurationService
     {
         if (array_key_exists($type, $this->config['tuition_fees'])) {
             return new TuitionFeeConfig($this->config['tuition_fees'][$type]);
-        } else {
-            throw new \RuntimeException('Unknown payment type: '.$type);
         }
+        throw new \RuntimeException('Unknown payment type: '.$type);
     }
 }

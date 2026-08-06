@@ -9,7 +9,7 @@
         "dbp/relay-base-person-bundle": "^0.2.33",
         "dbp/relay-core-bundle": "^0.1.186",
         "dbp/relay-mono-bundle": "^0.5.0",
-        "guzzlehttp/guzzle": "^7.4",
+        "guzzlehttp/guzzle": "^7.4 || ^8.0",
         "league/uri": "^6.5 || ^7.4",
         "psr/log": "^1.1.4 || ^2.0 || ^3.0",
         "symfony/config": "^6.4 || ^7.4",

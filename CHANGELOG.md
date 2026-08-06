@@ -2,6 +2,8 @@
 
 ## Unreleased
 
+* Add support for guzzle 8
+
 ## v0.3.3
 
 * Dependency cleanups

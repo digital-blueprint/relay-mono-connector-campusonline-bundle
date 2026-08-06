@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Dbp\Relay\MonoConnectorCampusonlineBundle\TuitionFee;
 
+use GuzzleHttp\Exception\BadResponseException;
 use GuzzleHttp\Exception\RequestException;
 use League\Uri\UriTemplate;
 use Psr\Log\LoggerAwareInterface;
@@ -60,7 +61,10 @@ class TuitionFeeApi implements LoggerAwareInterface
 
     private function createResponseError(RequestException $e): ApiException
     {
-        $response = $e->getResponse();
+        // In Guzzle 8 only response-aware exceptions (BadResponseException and
+        // other ResponseException subclasses) expose the response, whereas the
+        // base RequestException no longer has getResponse().
+        $response = $e instanceof BadResponseException ? $e->getResponse() : null;
         if ($response === null) {
             $this->auditLogger->error('CO: unknown error', $this->withLoggingContext());
 

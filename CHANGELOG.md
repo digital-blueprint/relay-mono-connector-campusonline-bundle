@@ -2,6 +2,8 @@
 
 ## Unreleased
 
+## v0.3.4
+
 * Add support for guzzle 8
 
 ## v0.3.3

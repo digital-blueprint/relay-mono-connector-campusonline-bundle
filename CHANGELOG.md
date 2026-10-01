@@ -2,6 +2,10 @@
 
 ## Unreleased
 
+## v0.3.5
+
+* New error detail when nothing is to pay (`mono:no-payment-due`)
+
 ## v0.3.4
 
 * Add support for guzzle 8

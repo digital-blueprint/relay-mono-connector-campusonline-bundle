@@ -161,7 +161,7 @@ class TuitionFeeServiceTest extends KernelTestCase
         }
     }
 
-    public function testUpdateDataAmountToSmall(): void
+    public function testUpdateDataNoOpenTuitionFees(): void
     {
         $this->mockResponses([
             new Response(200, ['Content-Type' => 'application/json'], '{"amount":0,"semesterKey":"2022S"}'),
@@ -174,7 +174,27 @@ class TuitionFeeServiceTest extends KernelTestCase
 
         try {
             $this->tuitionFeeService->updateData('co_test_payment_type', $paymentPersistence);
-            $this->fail('Expected an 400 ApiError');
+            $this->fail('Expected a 400 ApiError');
+        } catch (ApiError $apiError) {
+            $this->assertSame($apiError->getStatusCode(), HttpResponse::HTTP_BAD_REQUEST);
+            $this->assertSame($apiError->getErrorId(), 'mono:no-payment-due');
+        }
+    }
+
+    public function testUpdateDataAmountTooSmall(): void
+    {
+        $this->mockResponses([
+            new Response(200, ['Content-Type' => 'application/json'], '{"amount":0.5,"semesterKey":"2022S"}'),
+        ]);
+
+        $paymentPersistence = new PaymentPersistence();
+        $paymentPersistence->setIdentifier('test_payment_persistence');
+        $paymentPersistence->setType('test_payment_type');
+        $paymentPersistence->setData('22S');
+
+        try {
+            $this->tuitionFeeService->updateData('co_test_payment_type', $paymentPersistence);
+            $this->fail('Expected a 400 ApiError');
         } catch (ApiError $apiError) {
             $this->assertSame($apiError->getStatusCode(), HttpResponse::HTTP_BAD_REQUEST);
             $this->assertSame($apiError->getErrorId(), 'mono:start-payment-amount-too-low');

@@ -133,6 +133,10 @@ class TuitionFeeService implements BackendServiceInterface, LoggerAwareInterface
                 throw new ApiError(Response::HTTP_INTERNAL_SERVER_ERROR, 'Communication error with backend!');
             }
             $amount = $tuitionFeeData->getAmount();
+            if ($amount <= 0) {
+                $this->auditLogger->info('CO: no tuition fee payment open', $this->getLoggingContext($payment));
+                throw ApiError::withDetails(Response::HTTP_BAD_REQUEST, 'No payment is due', 'mono:no-payment-due');
+            }
             // The /payment-registrations CO API returns an error for everything smaller then 1.0. To avoid starting
             // a payment that we can never report back fail early here.
             if ($amount < 1.0) {
